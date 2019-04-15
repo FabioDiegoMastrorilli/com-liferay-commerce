@@ -9,7 +9,7 @@
 	font-size: 13px;
 	grid-gap: 15px;
 	align-items: center;
-	color: #2A2A2A;
+	color: $color-fg-alt;
 
 	grid-template-areas: "image content actions price delete";
 
