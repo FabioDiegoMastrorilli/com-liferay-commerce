@@ -23,6 +23,8 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.discount.CommerceDiscountValue;
+import com.liferay.commerce.discount.exception.CommerceDiscountCouponCodeException;
+import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
 import com.liferay.commerce.exception.CommerceOrderBillingAddressException;
 import com.liferay.commerce.exception.CommerceOrderPurchaseOrderNumberException;
 import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
@@ -271,6 +273,23 @@ public class CommerceOrderLocalServiceImpl
 		CommerceOrder commerceOrder =
 			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
 
+		try {
+			boolean hasDiscounts = false;
+
+			if (_commerceDiscountLocalService.getCommerceDiscountsCount(
+					commerceOrder.getScopeGroupId(), couponCode) == 0) {
+
+				hasDiscounts = true;
+			}
+
+			if (hasDiscounts && Validator.isNotNull(couponCode)) {
+				throw new CommerceDiscountCouponCodeException();
+			}
+		}
+		catch (CommerceDiscountCouponCodeException cdcce) {
+			throw new CommerceDiscountCouponCodeException(cdcce);
+		}
+
 		commerceOrder.setCouponCode(couponCode);
 
 		commerceOrderPersistence.update(commerceOrder);
@@ -396,12 +415,19 @@ public class CommerceOrderLocalServiceImpl
 
 		// Workflow
 
-		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+		if (hasWorkflowDefinition(
+				commerceOrder.getScopeGroupId(),
+				commerceOrder.getCommerceOrderId())) {
 
-		workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
-			commerceOrder.getCompanyId(),
-			commerceAccount.getCommerceAccountGroupId(),
-			CommerceOrder.class.getName(), commerceOrder.getCommerceOrderId());
+			CommerceAccount commerceAccount =
+				commerceOrder.getCommerceAccount();
+
+			workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
+				commerceOrder.getCompanyId(),
+				commerceAccount.getCommerceAccountGroupId(),
+				CommerceOrder.class.getName(),
+				commerceOrder.getCommerceOrderId());
+		}
 
 		return commerceOrder;
 	}
@@ -1611,6 +1637,9 @@ public class CommerceOrderLocalServiceImpl
 
 	@ServiceReference(type = CommerceCurrencyLocalService.class)
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@ServiceReference(type = CommerceDiscountLocalService.class)
+	private CommerceDiscountLocalService _commerceDiscountLocalService;
 
 	@ServiceReference(type = CommerceOrderConfiguration.class)
 	private CommerceOrderConfiguration _commerceOrderConfiguration;
