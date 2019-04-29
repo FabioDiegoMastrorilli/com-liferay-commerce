@@ -29,7 +29,7 @@ String galleryId = PortalUtil.generateRandomKey(request, "gallery");
 NPMResolver npmResolver = NPMResolverProvider.getNPMResolver();
 %>
 
-<div class="container-fluid product-detail" id="<portlet:namespace /><%= cpDefinitionId %>ProductContent">
+<div class="product-detail" id="<portlet:namespace /><%= cpDefinitionId %>ProductContent">
 	<div class="row">
 		<div class="col-6" id="minium-product-gallery">
 
@@ -145,9 +145,9 @@ NPMResolver npmResolver = NPMResolverProvider.getNPMResolver();
 											};
 											AddToCartButton.disabled = false;
 
-											document.querySelector('[data-text-cp-instance-sku]').innerHTML = response.sku || '';
-											document.querySelector('[data-text-cp-instance-manufacturer-part-number]').innerHTML = response.manufacturerPartNumber || '';
-											document.querySelector('[data-text-cp-instance-gtin]').innerHTML = response.gtin || '';
+											document.querySelector('[data-text-cp-instance-sku]').innerHTML = Liferay.Util.escape(response.sku) || '';
+											document.querySelector('[data-text-cp-instance-manufacturer-part-number]').innerHTML = Liferay.Util.escape(response.manufacturerPartNumber) || '';
+											document.querySelector('[data-text-cp-instance-gtin]').innerHTML = Liferay.Util.escape(response.gtin) || '';
 											document.querySelector('[data-text-cp-instance-availability]').innerHTML = response.availability || '';
 											document.querySelector('[data-text-cp-instance-availability-estimate]').innerHTML = response.availabilityEstimate || '';
 											document.querySelector('[data-text-cp-instance-stock-quantity]').innerHTML = response.stockQuantity || '';
@@ -290,10 +290,10 @@ List<CPMedia> cpAttachmentFileEntries = cpContentHelper.getCPAttachmentFileEntri
 								%>
 
 									<dt class="specification-term">
-										<%= cpSpecificationOption.getTitle(languageId) %>
+										<%= HtmlUtil.escape(cpSpecificationOption.getTitle(languageId)) %>
 									</dt>
 									<dd class="specification-desc">
-										<%= cpDefinitionSpecificationOptionValue.getValue(languageId) %>
+										<%= HtmlUtil.escape(cpDefinitionSpecificationOptionValue.getValue(languageId)) %>
 									</dd>
 
 								<%
