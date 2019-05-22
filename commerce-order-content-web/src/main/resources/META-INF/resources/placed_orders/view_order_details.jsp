@@ -59,8 +59,8 @@ if (commerceOrder != null) {
 
 </liferay-ui:error>
 
-<div class="commerce-panel">
-	<div class="commerce-panel__content">
+<div class="panel panel-secondary">
+	<div class="panel-body">
 		<div class="align-items-center row">
 			<div class="col-md-3">
 				<div class="commerce-order-title">
@@ -92,7 +92,7 @@ if (commerceOrder != null) {
 		</div>
 	</div>
 
-	<div class="commerce-panel__content">
+	<div class="panel-body">
 		<div class="align-items-center row">
 			<div class="col-md-3">
 				<dl class="commerce-list">
@@ -142,9 +142,11 @@ if (commerceOrder != null) {
 
 <div class="row">
 	<div class="col-md-6">
-		<div class="commerce-panel">
-			<div class="commerce-panel__title"><liferay-ui:message key="billing-address" /></div>
-			<div class="commerce-panel__content">
+		<div class="panel panel-secondary">
+			<div class="panel-header">
+				<div class="panel-title"><liferay-ui:message key="billing-address" /></div>
+			</div>
+			<div class="panel-body">
 				<div class="row">
 					<div class="col-md-12">
 						<c:if test="<%= billingCommerceAddress != null %>">
@@ -158,9 +160,11 @@ if (commerceOrder != null) {
 	</div>
 
 	<div class="col-md-6">
-		<div class="commerce-panel">
-			<div class="commerce-panel__title"><liferay-ui:message key="shipping-address" /></div>
-			<div class="commerce-panel__content">
+		<div class="panel panel-secondary">
+			<div class="panel-header">
+				<div class="panel-title"><liferay-ui:message key="shipping-address" /></div>
+			</div>
+			<div class="panel-body">
 				<div class="row">
 					<div class="col-md-12">
 						<c:if test="<%= shippingCommerceAddress != null %>">
@@ -205,8 +209,8 @@ if (commerceOrder != null) {
 	</div>
 
 	<div class="col-md-3">
-		<div class="commerce-panel">
-			<div class="commerce-panel__content">
+		<div class="panel panel-secondary">
+			<div class="panel-body">
 				<dl class="commerce-list">
 					<dt><liferay-ui:message key="subtotal" /></dt>
 					<dd class="text-right"><%= HtmlUtil.escape(subtotal.format(locale)) %></dd>
@@ -255,7 +259,7 @@ if (commerceOrder != null) {
 				</dl>
 			</div>
 
-			<div class="commerce-panel__content">
+			<div class="panel-body">
 				<dl class="commerce-list">
 					<dt><liferay-ui:message key="total" /></dt>
 					<dd class="text-right"><%= HtmlUtil.escape(totalOrder.format(locale)) %></dd>
