@@ -58,7 +58,7 @@ public class AddressModalTag extends ComponentRendererTag {
 		}
 
 		return npmResolver.resolveModuleName(
-			"commerce-frontend-taglib/address_modal/AddressModal.es");
+			"commerce-frontend-taglib/js/address_modal/AddressModal.es");
 	}
 
 }
