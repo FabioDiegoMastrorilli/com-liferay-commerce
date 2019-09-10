@@ -1,23 +1,21 @@
 import launcher from './entry.es';
+import './side_panel.scss';
 
 window.SidePanel = launcher('sidePanel', 'side-panel', {
 	size: 'medium',
 	show: false,
-	tabs: [
+	pages: [
 		{
-			url: '/iframe.html',
-			pageName: 'Comments',
-			slug: 'comments',
+			url: `/index.html?${Math.random()}`,
+			pageName: 'Index',
 		},
 		{
-			url: '/iframe.html',
-			pageName: 'Edit',
-			slug: 'edit',
+			url: `/addorcreate.html?${Math.random()}`,
+			pageName: 'Add or create',
 		},
 		{
-			url: '/iframe.html',
-			pageName: 'Changelog',
-			slug: 'changelog',
+			url: `/gallery.html?${Math.random()}`,
+			pageName: 'Gallery',
 		},
 	],
 });

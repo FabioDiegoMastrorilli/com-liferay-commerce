@@ -1,61 +1,99 @@
 import React from 'react';
 import Tabs from './Tabs.es';
-import { globalEval } from 'metal-dom';
-
-import './side_panel.scss';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 
 export default class SidePanel extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			show: !!props.show,
-			tabs: props.tabs,
-			currentTab: props.currentTab || props.tabs[0],
-			content: '',
+			animating: false,
+			loading: !!props.pages,
+			loaded: !!props.pages,
+			pages: this.formatPages(props.pages),
+			currentTab: this.getFirstTab(props.pages),
+			size: props.size || 'medium',
 		}
-		this.selectPane = this.selectPane.bind(this);
-		this.content = React.createRef();
+		this.selectTab = this.selectTab.bind(this);
+		this.contentLoaded = this.contentLoaded.bind(this);
+		this.panel = React.createRef();
 	}
 
-	load(tabs) {
+	load(pages, size = this.state.size) {
 		this.setState({
-			tabs,
-			currentTab: tabs[0],
-			show: true,
+			loading: true,
+			loaded: false,
+			pages: this.formatPages(pages),
+			currentTab: this.getFirstTab(pages),
+			size,
 		});
-		this.getContent(tabs[0]);
 	}
 
-	toggle() {
-		this.setState({show: !this.state.show});
+	setSize(size = 'medium') {
+		this.setState({size});
 	}
 
-	close() {
-		this.setState({show: false});
+	getFirstTab(pages = '') {
+		return typeof pages === 'string' ? pages : pages[0].url
 	}
 
-	selectPane(slug) {
-		const currentTab = this.state.tabs.find(el => el.slug === slug);
-		this.getContent(currentTab);
+	formatPages(pages = []) {
+		return typeof pages === 'string' ? [{url: pages}] : pages;
 	}
 
-	getContent(currentTab) {
-		this.setState({ currentTab })
-		// return fetch(currentTab.url)
-		// 	.then(res => res.text())
-		// 	.then(content => this.setState({ content, currentTab }))
-		// 	.then(() => globalEval.runScriptsInElement(this.content.current));
+	open(content = false, size) {
+		content && this.load(content, size);
+		this.toggle(true);
+	}
+
+	close(destroy = false) {
+		this.toggle(false);
+		destroy && this.panel.current.addEventListener('transitionend', () => {
+			this.setState({
+				loading: true,
+				loaded: false,
+			});
+		}, {once: true});
+	}
+
+	toggle(status = !this.state.show) {
+		this.setState({show: status, animating: true});
+		this.panel.current.addEventListener('transitionend', () => {
+			this.setState({animating: false});
+		}, {once: true});
+	}
+
+	selectTab(url) {
+		const currentTab = this.state.pages.find(el => el.url === url).url;
+		this.setState({
+			loading: true,
+			loaded: false,
+			currentTab
+		});
+	}
+
+	contentLoaded() {
+		this.setState({
+			loading: false,
+			loaded: true,
+		});
+	}
+
+	showIframe() {
+		return this.state.loaded || (this.state.show ^ this.state.animating);
 	}
 
 	render() {
 		const visibility = this.state.show ? 'is-visible' : 'is-hidden';
+		const loading = this.state.loading ? 'is-loading' : '';
 
 		return (
-			<div className={`side-panel side-panel--${this.props.size} ${visibility}`}>
-				{this.state.tabs.length > 1 && <Tabs tabs={this.state.tabs} onChange={this.selectPane} current={this.state.currentTab.slug} />}
+			<div className={`side-panel side-panel--${this.state.size} ${visibility} ${loading}`} ref={this.panel}>
+				{this.state.pages.length > 1 ? <Tabs tabs={this.state.pages} onChange={this.selectTab} current={this.state.currentTab} /> : null}
 				<div className="tab-content">
-					<div className="active fade show tab-pane" role="tabpanel" ref={this.content}>
-						<iframe src={this.state.currentTab.url} frameBorder="0"></iframe>
+					<div className="side-panel__loader"><ClayLoadingIndicator /></div>
+					<div className="active fade show tab-pane" role="tabpanel">
+						{this.showIframe() ? <iframe src={this.state.currentTab} frameBorder="0" onLoad={this.contentLoaded}></iframe> : null}
 					</div>
 				</div>
 			</div>
