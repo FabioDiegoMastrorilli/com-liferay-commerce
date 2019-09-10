@@ -40,6 +40,7 @@ PortletURL portletURL = commerceOrderEditDisplayContext.getCommerceOrderItemsPor
 				triggerId="shipping-modal-id"
 				url="<%= editURL %>"
 			/>
+
 			<commerce-ui:panel
 				elementClasses="flex-fill"
 				headerActionId="shipping-modal-id"
