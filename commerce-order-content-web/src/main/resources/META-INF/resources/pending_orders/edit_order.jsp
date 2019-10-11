@@ -326,40 +326,6 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 			</div>
 		</div>
 
-<<<<<<< HEAD
-		<div class="col-md-6">
-			<div class="commerce-panel">
-				<div class="commerce-panel__title"><liferay-ui:message key="shipping-address" /></div>
-				<div class="commerce-panel__content">
-					<div class="row">
-						<div class="col-md-12">
-							<c:choose>
-								<c:when test="<%= commerceOrderContentDisplayContext.hasModelPermission(commerceOrder, ActionKeys.UPDATE) %>">
-									<dl class="commerce-list">
-										<aui:select cssClass="commerce-input" inlineField="<%= true %>" label="" name="shippingAddressId" wrappedField="<%= false %>">
-
-											<%
-											for (CommerceAddress commerceAddress : shippingAddresses) {
-											%>
-
-												<aui:option label="<%= commerceAddress.getName() %>" selected="<%= shippingCommerceAddressId == commerceAddress.getCommerceAddressId() %>" value="<%= commerceAddress.getCommerceAddressId() %>" />
-
-											<%
-											}
-											%>
-
-										</aui:select>
-									</dl>
-								</c:when>
-								<c:otherwise>
-									<c:if test="<%= shippingCommerceAddress != null %>">
-										<%= shippingCommerceAddress.getStreet1() %><br />
-										<%= shippingCommerceAddress.getCity() + StringPool.SPACE + shippingCommerceAddress.getZip() %>
-									</c:if>
-								</c:otherwise>
-							</c:choose>
-						</div>
-=======
 		<c:if test="<%= (shippingDiscountValue != null) && (BigDecimal.ZERO.compareTo(shippingDiscountValue.getDiscountPercentage()) < 0) %>">
 			<% CommerceMoney shippingDiscountAmount = shippingDiscountValue.getDiscountAmount(); %>
 			<div class="row">
@@ -377,7 +343,6 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 					</div>
 					<div class="table-summary__value">
 						<%= HtmlUtil.escape(commerceOrderContentDisplayContext.getFormattedPercentage(shippingDiscountValue.getDiscountPercentage())) %>
->>>>>>> fd7d991f9... COMMERCE-1428 edit orders boostraped and (partially) miniumized
 					</div>
 				</div>
 			</div>
