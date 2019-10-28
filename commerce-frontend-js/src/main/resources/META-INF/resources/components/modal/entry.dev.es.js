@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {launcher} from '../utilities/index.es';
+import {launcher} from '../../utilities/index.es';
 import modalLauncher from './entry.es';
 
 const props = {
