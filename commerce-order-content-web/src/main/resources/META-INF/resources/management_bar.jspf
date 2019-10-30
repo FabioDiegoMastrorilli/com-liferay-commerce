@@ -14,6 +14,10 @@
  */
 --%>
 
+<%
+CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+%>
+
 <style>
 	.order-mananagement-bar {
 		display: flex;
@@ -28,7 +32,7 @@
 					<div class="col col-auto">
 				<span class="sticker sticker-primary sticker-xl">
 					<span class="sticker-overlay">
-						<img alt="thumbnail" class="img-fluid" src="<%= "https://via.placeholder.com/50x50" %>" />
+						<img alt="thumbnail" class="img-fluid" src="<%= commerceOrderContentDisplayContext.getCommerceAccountThumbnailURL() %>" />
 					</span>
 				</span>
 					</div>
@@ -37,7 +41,7 @@
 						<div class="row">
 							<div class="col-auto">
 								<h3 class="mb-0">
-									<%= "Bob's Sporting Mx" %>
+									<%= HtmlUtil.escape(commerceAccount.getName()) %>
 								</h3>
 
 								<span class="user-id">
@@ -50,18 +54,14 @@
 							</div>
 
 							<div class="col-auto">
-								<div># 53606</div>
 								<div>
-									<span class="workflow-status"><strong class="label status workflow-status-approved approved workflow-value"> Approved </strong></span>
+									<%= LanguageUtil.format(request, "order-x", commerceOrderContentDisplayContext.getCommerceOrderId()) %>
+								</div>
+
+								<div>
+									<aui:workflow-status bean="<%= commerceOrder %>" model="<%= CommerceOrder.class %>" showHelpMessage="<%= false %>" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= commerceOrder.getStatus() %>" />
 								</div>
 							</div>
-
-							<%--<c:if test="<%= bean instanceof WorkflowedModel %>">--%>
-							<%--<%--%>
-							<%--WorkflowedModel workflowedModel = (WorkflowedModel)bean;--%>
-							<%--%>--%>
-							<%--<aui:workflow-status bean="<%= bean %>" model="<%= model %>" showHelpMessage="<%= false %>" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= workflowedModel.getStatus() %>" />--%>
-							<%--</c:if>--%>
 						</div>
 					</div>
 				</div>
