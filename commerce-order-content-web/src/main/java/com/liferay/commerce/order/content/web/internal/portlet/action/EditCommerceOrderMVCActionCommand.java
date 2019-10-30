@@ -34,6 +34,8 @@ import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -41,6 +43,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.Calendar;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -54,6 +58,7 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Di Giorgi
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	immediate = true,
@@ -207,6 +212,24 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 					actionRequest, actionResponse,
 					openOrdersPortletURL.toString());
 			}
+			else if (cmd.equals("billingAddress")) {
+				updateBillingAddress(actionRequest);
+			}
+			else if (cmd.equals("orderSummary")) {
+				//TODO update order summary
+			}
+			else if (cmd.equals("printedNote")) {
+				updatePrintedNote(actionRequest);
+			}
+			else if (cmd.equals("purchaseOrderNumber")) {
+				updatePurchaseOrderNumber(actionRequest);
+			}
+			else if (cmd.equals("requestedDeliveryDate")) {
+				updateRequestedDeliveryDate(actionRequest);
+			}
+			else if (cmd.equals("shippingAddress")) {
+				updateShippingAddress(actionRequest);
+			}
 			else if (cmd.equals("reorder")) {
 				reorderCommerceOrder(actionRequest);
 			}
@@ -326,6 +349,34 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 		_commerceOrderService.submitCommerceOrder(commerceOrderId);
 	}
 
+	protected void updateBillingAddress(ActionRequest actionRequest)
+		throws Exception {
+
+		long commerceOrderId = ParamUtil.getLong(
+			actionRequest, "commerceOrderId");
+
+		String name = ParamUtil.getString(actionRequest, "name");
+		String description = ParamUtil.getString(actionRequest, "description");
+		String street1 = ParamUtil.getString(actionRequest, "street1");
+		String street2 = ParamUtil.getString(actionRequest, "street2");
+		String street3 = ParamUtil.getString(actionRequest, "street3");
+		String city = ParamUtil.getString(actionRequest, "city");
+		String zip = ParamUtil.getString(actionRequest, "zip");
+		long commerceCountryId = ParamUtil.getLong(
+			actionRequest, "commerceCountryId");
+		long commerceRegionId = ParamUtil.getLong(
+			actionRequest, "commerceRegionId");
+		String phoneNumber = ParamUtil.getString(actionRequest, "phoneNumber");
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			CommerceOrder.class.getName(), actionRequest);
+
+		_commerceOrderService.updateBillingAddress(
+			commerceOrderId, name, description, street1, street2, street3, city,
+			zip, commerceRegionId, commerceCountryId, phoneNumber,
+			serviceContext);
+	}
+
 	protected void updateCommerceOrder(ActionRequest actionRequest)
 		throws Exception {
 
@@ -354,6 +405,94 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 			commerceOrder.getSubtotal(), commerceOrder.getShippingAmount(),
 			commerceOrder.getTotal(), commerceOrder.getAdvanceStatus(),
 			commerceContext);
+	}
+
+	protected void updatePrintedNote(ActionRequest actionRequest)
+		throws Exception {
+
+		long commerceOrderId = ParamUtil.getLong(
+			actionRequest, "commerceOrderId");
+
+		String printedNote = ParamUtil.getString(actionRequest, "printedNote");
+
+		//TODO update printed note
+	}
+
+	protected void updatePurchaseOrderNumber(ActionRequest actionRequest)
+		throws Exception {
+
+		long commerceOrderId = ParamUtil.getLong(
+			actionRequest, "commerceOrderId");
+
+		String purchaseOrderNumber = ParamUtil.getString(
+			actionRequest, "purchaseOrderNumber");
+
+		_commerceOrderService.updatePurchaseOrderNumber(
+			commerceOrderId, purchaseOrderNumber);
+	}
+
+	protected void updateRequestedDeliveryDate(ActionRequest actionRequest)
+		throws Exception {
+
+		long commerceOrderId = ParamUtil.getLong(
+			actionRequest, "commerceOrderId");
+
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			commerceOrderId);
+
+		int requestedDeliveryDateMonth = ParamUtil.getInteger(
+			actionRequest, "requestedDeliveryDateMonth");
+		int requestedDeliveryDateDay = ParamUtil.getInteger(
+			actionRequest, "requestedDeliveryDateDay");
+		int requestedDeliveryDateYear = ParamUtil.getInteger(
+			actionRequest, "requestedDeliveryDateYear");
+		int requestedDeliveryDateHour = ParamUtil.getInteger(
+			actionRequest, "requestedDeliveryDateHour");
+		int requestedDeliveryDateMinute = ParamUtil.getInteger(
+			actionRequest, "requestedDeliveryDateMinute");
+		int requestedDeliveryDateAmPm = ParamUtil.getInteger(
+			actionRequest, "requestedDeliveryDateAmPm");
+
+		if (requestedDeliveryDateAmPm == Calendar.PM) {
+			requestedDeliveryDateHour += 12;
+		}
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			CommerceOrder.class.getName(), actionRequest);
+
+		_commerceOrderService.updateInfo(
+			commerceOrder.getCommerceOrderId(), commerceOrder.getPrintedNote(),
+			requestedDeliveryDateMonth, requestedDeliveryDateDay,
+			requestedDeliveryDateYear, requestedDeliveryDateHour,
+			requestedDeliveryDateMinute, serviceContext);
+	}
+
+	protected void updateShippingAddress(ActionRequest actionRequest)
+		throws Exception {
+
+		long commerceOrderId = ParamUtil.getLong(
+			actionRequest, "commerceOrderId");
+
+		String name = ParamUtil.getString(actionRequest, "name");
+		String description = ParamUtil.getString(actionRequest, "description");
+		String street1 = ParamUtil.getString(actionRequest, "street1");
+		String street2 = ParamUtil.getString(actionRequest, "street2");
+		String street3 = ParamUtil.getString(actionRequest, "street3");
+		String city = ParamUtil.getString(actionRequest, "city");
+		String zip = ParamUtil.getString(actionRequest, "zip");
+		long commerceCountryId = ParamUtil.getLong(
+			actionRequest, "commerceCountryId");
+		long commerceRegionId = ParamUtil.getLong(
+			actionRequest, "commerceRegionId");
+		String phoneNumber = ParamUtil.getString(actionRequest, "phoneNumber");
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			CommerceOrder.class.getName(), actionRequest);
+
+		_commerceOrderService.updateShippingAddress(
+			commerceOrderId, name, description, street1, street2, street3, city,
+			zip, commerceRegionId, commerceCountryId, phoneNumber,
+			serviceContext);
 	}
 
 	private String _getOrderDetailRedirect(
