@@ -18,23 +18,17 @@
 CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 %>
 
-<style>
-	.order-mananagement-bar {
-		display: flex;
-	}
-</style>
-
 <div class="card mb-4">
 	<div class="card-body">
-		<div class="order-mananagement-bar">
+		<div class="order-mananagement-bar d-lg-flex">
 			<div class="align-items-center d-flex flex-grow-1">
-				<div class="row">
-					<div class="col col-auto">
-				<span class="sticker sticker-primary sticker-xl">
-					<span class="sticker-overlay">
-						<img alt="thumbnail" class="img-fluid" src="<%= commerceOrderContentDisplayContext.getCommerceAccountThumbnailURL() %>" />
-					</span>
-				</span>
+				<div class="row flex-grow-1">
+					<div class="col-auto">
+						<span class="sticker sticker-primary sticker-xl">
+							<span class="sticker-overlay">
+								<img alt="thumbnail" class="img-fluid" src="<%= commerceOrderContentDisplayContext.getCommerceAccountThumbnailURL() %>" />
+							</span>
+						</span>
 					</div>
 
 					<div class="col">
@@ -45,15 +39,15 @@ CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 								</h3>
 
 								<span class="user-id">
-							Id:
-							<clay:link
-								href="#"
-								label="007274"
-							/>
-						</span>
+									Id:
+									<clay:link
+										href="#"
+										label="007274"
+									/>
+								</span>
 							</div>
 
-							<div class="col-auto">
+							<div class="col border-left">
 								<div>
 									<%= LanguageUtil.format(request, "order-x", commerceOrderContentDisplayContext.getCommerceOrderId()) %>
 								</div>
@@ -64,67 +58,64 @@ CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 							</div>
 						</div>
 					</div>
+					<div class="col-auto d-lg-none">
+						<%
+							Map<String, String> headerTogglerData = new HashMap<>();
+							headerTogglerData.put("toggle", "collapse");
+							headerTogglerData.put("target", "#navbarNavAltMarkup");
+						%>
+						<clay:button
+							data="<%= headerTogglerData %>"
+							elementClasses="navbar-toggler p-3"
+							type="button"
+							style="secondary"
+							icon="bars"
+							spritemap="/o/admin-theme/images/lexicon/icons.svg"
+						/>
+						<%--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">--%>
+							<%--<span class="navbar-toggler-icon"></span>--%>
+						<%--</button>--%>
+					</div>
 				</div>
 			</div>
 
-			<div class="align-items-center d-flex">
-				<div class="border-right d-flex mr-3 px-3">
-					<c:if test="<%= true %>">
-						<div id="assigner-root"></div>
+			<div id="navbarNavAltMarkup" class="collapse d-lg-flex">
+				<div class="row align-self-center">
+					<div class="header-assigner col-12 mt-3 mt-lg-0 col-lg-auto">
+						<c:if test="<%= true %>">
+							<div id="assigner-root"></div>
+							<aui:script require="commerce-frontend-js/components/assigner/entry.es as assigner">
+								assigner.default(
+									"assigner",
+									"assigner-root",
+									{
+										spritemap: "<%= "/o/minium-theme/images/commerce-icons.svg" %>"
+									}
+								);
+							</aui:script>
+						</c:if>
+					</div>
+					<div class="header-actions col-12 mt-3 mt-lg-0 col-lg-auto">
+						<clay:link
+							buttonStyle="secondary"
+							elementClasses="mr-1"
+							href="#"
+							label="Rejected"
+						/>
 
-						<aui:script require="commerce-frontend-js/components/assigner/entry.es as assigner">
-							assigner.default(
-							"assigner",
-							"assigner-root",
-							{
-							spritemap: "<%= "/o/minium-theme/images/commerce-icons.svg" %>"
-							}
-							);
-						</aui:script>
-					</c:if>
-				</div>
+						<clay:link
+							buttonStyle="secondary"
+							elementClasses="mr-1"
+							href="#"
+							label="Approved"
+						/>
 
-				<div class="actions">
-
-					<%--<c:if test="<%= headerActionModels != null %>">--%>
-
-					<%--<%--%>
-					<%--for (HeaderActionModel headerActionModel : headerActionModels) {--%>
-					<%--%>--%>
-
-					<%--<clay:link--%>
-					<%--buttonStyle="<%= headerActionModel.getStyle() %>"--%>
-					<%--elementClasses="mr-1"--%>
-					<%--href="<%= headerActionModel.getHref() %>"--%>
-					<%--id="<%= headerActionModel.getId() %>"--%>
-					<%--label="<%= headerActionModel.getLabel() %>"--%>
-					<%--/>--%>
-
-					<%--<%--%>
-					<%--}--%>
-					<%--%>--%>
-
-					<%--</c:if>--%>
-
-					<clay:link
-						buttonStyle="secondary"
-						elementClasses="mr-1"
-						href="#"
-						label="Rejected"
-					/>
-
-					<clay:link
-						buttonStyle="secondary"
-						elementClasses="mr-1"
-						href="#"
-						label="Approved"
-					/>
-
-					<clay:link
-						buttonStyle="primary"
-						href="#"
-						label="Checkout"
-					/>
+						<clay:link
+							buttonStyle="primary"
+							href="#"
+							label="Checkout"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
