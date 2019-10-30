@@ -32,6 +32,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderNote;
 import com.liferay.commerce.model.CommerceRegion;
 import com.liferay.commerce.model.CommerceShipmentItem;
+import com.liferay.commerce.order.CommerceOrderHelper;
 import com.liferay.commerce.order.content.web.internal.frontend.OrderFilterImpl;
 import com.liferay.commerce.order.content.web.internal.portlet.configuration.CommerceOrderContentPortletInstanceConfiguration;
 import com.liferay.commerce.price.CommerceOrderPrice;
@@ -60,6 +61,7 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -83,6 +85,7 @@ public class CommerceOrderContentDisplayContext {
 
 	public CommerceOrderContentDisplayContext(
 			CommerceChannelLocalService commerceChannelLocalService,
+			CommerceOrderHelper commerceOrderHelper,
 			CommerceOrderItemService commerceOrderItemService,
 			CommerceOrderNoteService commerceOrderNoteService,
 			CommerceOrderPriceCalculation commerceOrderPriceCalculation,
@@ -94,6 +97,7 @@ public class CommerceOrderContentDisplayContext {
 		throws PortalException {
 
 		_commerceChannelLocalService = commerceChannelLocalService;
+		_commerceOrderHelper = commerceOrderHelper;
 		_commerceOrderItemService = commerceOrderItemService;
 		_commerceOrderNoteService = commerceOrderNoteService;
 		_commerceOrderPriceCalculation = commerceOrderPriceCalculation;
@@ -265,6 +269,74 @@ public class CommerceOrderContentDisplayContext {
 		}
 
 		return _commerceOrders;
+	}
+
+	public List<ObjectValuePair<Long, String>> getCommerceOrderTransitionOVPs(
+			CommerceOrder commerceOrder, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		List<ObjectValuePair<Long, String>> transitionOVPs = new ArrayList<>();
+
+		if (commerceOrder == null) {
+			return transitionOVPs;
+		}
+
+		if (!commerceOrder.isOpen()) {
+			transitionOVPs.add(
+				new ObjectValuePair<Long, String>(0L, "reorder"));
+		}
+
+		ObjectValuePair<Long, String> approveOVP = null;
+
+		if (commerceOrder.isOpen() && commerceOrder.isPending() &&
+			_modelResourcePermission.contains(
+				themeDisplay.getPermissionChecker(), commerceOrder,
+				CommerceOrderActionKeys.APPROVE_COMMERCE_ORDER)) {
+
+			approveOVP = new ObjectValuePair<>(0L, "approve");
+
+			transitionOVPs.add(approveOVP);
+		}
+
+		if (commerceOrder.isOpen() && commerceOrder.isApproved() &&
+			_modelResourcePermission.contains(
+				themeDisplay.getPermissionChecker(), commerceOrder,
+				CommerceOrderActionKeys.CHECKOUT_COMMERCE_ORDER)) {
+
+			transitionOVPs.add(new ObjectValuePair<>(0L, "checkout"));
+		}
+
+		if (commerceOrder.isOpen() && commerceOrder.isDraft() &&
+			!commerceOrder.isEmpty() &&
+			_modelResourcePermission.contains(
+				themeDisplay.getPermissionChecker(), commerceOrder,
+				ActionKeys.UPDATE)) {
+
+			transitionOVPs.add(new ObjectValuePair<>(0L, "submit"));
+		}
+
+		int start = transitionOVPs.size();
+
+		transitionOVPs.addAll(
+			_commerceOrderHelper.getWorkflowTransitions(
+				themeDisplay.getUserId(), commerceOrder));
+
+		if (approveOVP != null) {
+			for (int i = start; i < transitionOVPs.size(); i++) {
+				ObjectValuePair<Long, String> objectValuePair =
+					transitionOVPs.get(i);
+
+				String value = objectValuePair.getValue();
+
+				if (value.equals(approveOVP.getValue())) {
+					approveOVP.setValue("force-" + value);
+
+					break;
+				}
+			}
+		}
+
+		return transitionOVPs;
 	}
 
 	public List<CommerceShipmentItem> getCommerceShipmentItems(
@@ -552,6 +624,7 @@ public class CommerceOrderContentDisplayContext {
 	private final CommerceOrderContentPortletInstanceConfiguration
 		_commerceOrderContentPortletInstanceConfiguration;
 	private final Format _commerceOrderDateFormatDateTime;
+	private final CommerceOrderHelper _commerceOrderHelper;
 	private final CommerceOrderItemService _commerceOrderItemService;
 	private CommerceOrderNote _commerceOrderNote;
 	private final long _commerceOrderNoteId;
