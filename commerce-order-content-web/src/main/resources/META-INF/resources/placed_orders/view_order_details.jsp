@@ -60,7 +60,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 						<c:choose>
 							<c:when test="<%= billingAddress == null %>">
 								<span class="text-muted">
-									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									<%= LanguageUtil.get(request, "none") %>
 								</span>
 							</c:when>
 							<c:otherwise>
@@ -80,7 +80,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 						<c:choose>
 							<c:when test="<%= shippingAddress == null %>">
 								<span class="text-muted">
-									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									<%= LanguageUtil.get(request, "none") %>
 								</span>
 							</c:when>
 							<c:otherwise>
@@ -103,7 +103,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 						<c:choose>
 							<c:when test="<%= Validator.isNull(purchaseOrderNumber) %>">
 								<span class="text-muted">
-									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									<%= LanguageUtil.get(request, "none") %>
 								</span>
 							</c:when>
 							<c:otherwise>
@@ -123,7 +123,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 						<c:choose>
 							<c:when test="<%= requestedDeliveryDate == null %>">
 								<span class="text-muted">
-									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									<%= LanguageUtil.get(request, "none") %>
 								</span>
 							</c:when>
 							<c:otherwise>
@@ -147,7 +147,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 						<c:choose>
 							<c:when test="<%= Validator.isNull(printedNote) %>">
 								<span class="text-muted">
-									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									<%= LanguageUtil.get(request, "none") %>
 								</span>
 							</c:when>
 							<c:otherwise>
