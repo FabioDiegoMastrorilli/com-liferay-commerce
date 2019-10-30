@@ -25,10 +25,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 <div class="b2b-portlet-content-header">
 	<div class="autofit-float autofit-row header-title-bar">
 		<div class="autofit-col autofit-col-expand">
-			<liferay-ui:header
-				backURL="<%= redirect %>"
-				title='<%= LanguageUtil.format(request, "order-x", commerceOrder.getCommerceOrderId()) %>'
-			/>
+			<liferay-ui:message arguments="<%= commerceOrderContentDisplayContext.getCommerceOrderNotesCount(commerceOrder) %>" key="x-comments" />
 		</div>
 	</div>
 </div>
