@@ -20,25 +20,6 @@
 CommerceOrderContentDisplayContext commerceOrderContentDisplayContext = (CommerceOrderContentDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrder();
-
-CommerceAddress billingCommerceAddress = commerceOrder.getBillingAddress();
-CommerceAddress shippingCommerceAddress = commerceOrder.getShippingAddress();
-
-CommerceOrderPrice commerceOrderPrice = commerceOrderContentDisplayContext.getCommerceOrderPrice();
-
-CommerceMoney shippingValue = commerceOrderPrice.getShippingValue();
-CommerceDiscountValue shippingDiscountValue = commerceOrderPrice.getShippingDiscountValue();
-CommerceMoney subtotal = commerceOrderPrice.getSubtotal();
-CommerceDiscountValue subtotalDiscountValue = commerceOrderPrice.getSubtotalDiscountValue();
-CommerceMoney taxValue = commerceOrderPrice.getTaxValue();
-CommerceDiscountValue totalDiscountValue = commerceOrderPrice.getTotalDiscountValue();
-CommerceMoney totalOrder = commerceOrderPrice.getTotal();
-
-CommerceAccount commerceAccount = commerceOrderContentDisplayContext.getCommerceAccount();
-
-if (commerceOrder != null) {
-	commerceAccount = commerceOrder.getCommerceAccount();
-}
 %>
 
 <liferay-ui:error exception="<%= CommerceOrderValidatorException.class %>">
@@ -59,118 +40,131 @@ if (commerceOrder != null) {
 
 </liferay-ui:error>
 
-<div class="commerce-panel">
-	<div class="commerce-panel__content">
-		<div class="align-items-center row">
-			<div class="col-md-3">
-				<div class="commerce-order-title">
-					<%= HtmlUtil.escape(commerceAccount.getName()) %>
-				</div>
-			</div>
-
-			<div class="col-md-3">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="total" /></dt>
-					<dd><%= HtmlUtil.escape(totalOrder.format(locale)) %></dd>
-				</dl>
-			</div>
-
-			<div class="col-md-3">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="notes" /></dt>
-					<dd>
-
-						<%
-						request.setAttribute("order_notes.jsp-showLabel", Boolean.TRUE);
-						request.setAttribute("order_notes.jsp-taglibLinkCssClass", "link-outline link-outline-borderless link-outline-secondary lfr-icon-item-reverse");
-						%>
-
-						<liferay-util:include page="/placed_orders/order_notes.jsp" servletContext="<%= application %>" />
-					</dd>
-				</dl>
-			</div>
-		</div>
-	</div>
-
-	<div class="commerce-panel__content">
-		<div class="align-items-center row">
-			<div class="col-md-3">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="account-id" /></dt>
-					<dd><%= commerceAccount.getCommerceAccountId() %></dd>
-				</dl>
-			</div>
-
-			<div class="col-md-3">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="order-id" /></dt>
-					<dd><%= commerceOrder.getCommerceOrderId() %></dd>
-				</dl>
-			</div>
-
-			<div class="col-md-3">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="order-date" /></dt>
-					<dd>
-						<%= commerceOrderContentDisplayContext.getCommerceOrderDate(commerceOrder) %>
-						<%= commerceOrderContentDisplayContext.getCommerceOrderTime(commerceOrder) %>
-					</dd>
-				</dl>
-			</div>
-		</div>
-	</div>
-</div>
-
-<c:if test="<%= commerceOrderContentDisplayContext.isShowPurchaseOrderNumber() %>">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="commerce-panel">
-				<div class="commerce-panel__title"><liferay-ui:message key="purchase-order-number" /></div>
-				<div class="commerce-panel__content">
-					<div class="row">
-						<div class="col-md-6">
-							<dl class="commerce-list">
-								<%= commerceOrder.getPurchaseOrderNumber() %>
-							</dl>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</c:if>
-
 <div class="row">
-	<div class="col-md-6">
-		<div class="commerce-panel">
-			<div class="commerce-panel__title"><liferay-ui:message key="billing-address" /></div>
-			<div class="commerce-panel__content">
-				<div class="row">
-					<div class="col-md-12">
-						<c:if test="<%= billingCommerceAddress != null %>">
-							<%= billingCommerceAddress.getStreet1() %><br />
-							<%= billingCommerceAddress.getCity() + StringPool.SPACE + billingCommerceAddress.getZip() %>
-						</c:if>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<div class="col-12">
+		<commerce-ui:panel
+			elementClasses="flex-fill"
+			title='<%= LanguageUtil.get(request, "info") %>'
+		>
+			<div class="row vertically-divided">
+				<div class="col-md-4">
 
-	<div class="col-md-6">
-		<div class="commerce-panel">
-			<div class="commerce-panel__title"><liferay-ui:message key="shipping-address" /></div>
-			<div class="commerce-panel__content">
-				<div class="row">
-					<div class="col-md-12">
-						<c:if test="<%= shippingCommerceAddress != null %>">
-							<%= shippingCommerceAddress.getStreet1() %><br />
-							<%= shippingCommerceAddress.getCity() + StringPool.SPACE + shippingCommerceAddress.getZip() %>
-						</c:if>
-					</div>
+					<%
+					CommerceAddress billingAddress = commerceOrder.getBillingAddress();
+					%>
+
+					<commerce-ui:info-box
+						elementClasses="py-3"
+						title='<%= LanguageUtil.get(request, "billing-address") %>'
+					>
+						<c:choose>
+							<c:when test="<%= billingAddress == null %>">
+								<span class="text-muted">
+									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+								</span>
+							</c:when>
+							<c:otherwise>
+								<%= HtmlUtil.escape(commerceOrderContentDisplayContext.getDescriptiveCommerceAddress(billingAddress)) %>
+							</c:otherwise>
+						</c:choose>
+					</commerce-ui:info-box>
+
+					<%
+					CommerceAddress shippingAddress = commerceOrder.getShippingAddress();
+					%>
+
+					<commerce-ui:info-box
+						elementClasses="py-3"
+						title='<%= LanguageUtil.get(request, "shipping-address") %>'
+					>
+						<c:choose>
+							<c:when test="<%= shippingAddress == null %>">
+								<span class="text-muted">
+									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+								</span>
+							</c:when>
+							<c:otherwise>
+								<%= HtmlUtil.escape(commerceOrderContentDisplayContext.getDescriptiveCommerceAddress(shippingAddress)) %>
+							</c:otherwise>
+						</c:choose>
+					</commerce-ui:info-box>
+				</div>
+
+				<div class="col-md-4">
+
+					<%
+					String purchaseOrderNumber = commerceOrder.getPurchaseOrderNumber();
+					%>
+
+					<commerce-ui:info-box
+						elementClasses="py-3"
+						title='<%= LanguageUtil.get(request, "purchase-order-number") %>'
+					>
+						<c:choose>
+							<c:when test="<%= Validator.isNull(purchaseOrderNumber) %>">
+								<span class="text-muted">
+									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+								</span>
+							</c:when>
+							<c:otherwise>
+								<%= HtmlUtil.escape(purchaseOrderNumber) %>
+							</c:otherwise>
+						</c:choose>
+					</commerce-ui:info-box>
+
+					<%
+					Date requestedDeliveryDate = commerceOrder.getRequestedDeliveryDate();
+					%>
+
+					<commerce-ui:info-box
+						elementClasses="py-3"
+						title='<%= LanguageUtil.get(request, "requested-delivery-date") %>'
+					>
+						<c:choose>
+							<c:when test="<%= requestedDeliveryDate == null %>">
+								<span class="text-muted">
+									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+								</span>
+							</c:when>
+							<c:otherwise>
+								<%= commerceOrderContentDisplayContext.getCommerceOrderDateTime(requestedDeliveryDate) %>
+							</c:otherwise>
+						</c:choose>
+					</commerce-ui:info-box>
+				</div>
+
+				<%
+				String printedNote = commerceOrder.getPrintedNote();
+
+				String commerceOrderDateTime = commerceOrderContentDisplayContext.getCommerceOrderDateTime(commerceOrder.getCreateDate());
+				%>
+
+				<div class="col-md-4">
+					<commerce-ui:info-box
+						elementClasses="py-3"
+						title='<%= LanguageUtil.get(request, "printed-note") %>'
+					>
+						<c:choose>
+							<c:when test="<%= Validator.isNull(printedNote) %>">
+								<span class="text-muted">
+									<%= LanguageUtil.get(request, "click-add-to-insert") %>
+								</span>
+							</c:when>
+							<c:otherwise>
+								<%= HtmlUtil.escape(printedNote) %>
+							</c:otherwise>
+						</c:choose>
+					</commerce-ui:info-box>
+
+					<commerce-ui:info-box
+						elementClasses="py-3"
+						title='<%= LanguageUtil.get(request, "order-date") %>'
+					>
+						<%= HtmlUtil.escape(commerceOrderDateTime) %>
+					</commerce-ui:info-box>
 				</div>
 			</div>
-		</div>
+		</commerce-ui:panel>
 	</div>
 </div>
 
@@ -198,70 +192,15 @@ if (commerceOrder != null) {
 			tableName="commercePlacedOrderItems"
 		/>
 	</div>
-</div>
 
-<div class="row">
-	<div class="col-md-9">
-	</div>
-
-	<div class="col-md-3">
-		<div class="commerce-panel">
-			<div class="commerce-panel__content">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="subtotal" /></dt>
-					<dd class="text-right"><%= HtmlUtil.escape(subtotal.format(locale)) %></dd>
-
-					<c:if test="<%= (subtotalDiscountValue != null) && (BigDecimal.ZERO.compareTo(subtotalDiscountValue.getDiscountPercentage()) < 0) %>">
-
-						<%
-						CommerceMoney subtotalDiscountAmount = subtotalDiscountValue.getDiscountAmount();
-						%>
-
-						<dt><liferay-ui:message key="subtotal-discount" /></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(subtotalDiscountAmount.format(locale)) %></dd>
-						<dt></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(commerceOrderContentDisplayContext.getFormattedPercentage(subtotalDiscountValue.getDiscountPercentage())) %></dd>
-					</c:if>
-
-					<dt><liferay-ui:message key="delivery" /></dt>
-					<dd class="text-right"><%= HtmlUtil.escape(shippingValue.format(locale)) %></dd>
-
-					<c:if test="<%= (shippingDiscountValue != null) && (BigDecimal.ZERO.compareTo(shippingDiscountValue.getDiscountPercentage()) < 0) %>">
-
-						<%
-						CommerceMoney shippingDiscountAmount = shippingDiscountValue.getDiscountAmount();
-						%>
-
-						<dt><liferay-ui:message key="delivery-discount" /></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(shippingDiscountAmount.format(locale)) %></dd>
-						<dt></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(commerceOrderContentDisplayContext.getFormattedPercentage(shippingDiscountValue.getDiscountPercentage())) %></dd>
-					</c:if>
-
-					<dt><liferay-ui:message key="tax" /></dt>
-					<dd class="text-right"><%= HtmlUtil.escape(taxValue.format(locale)) %></dd>
-
-					<c:if test="<%= (totalDiscountValue != null) && (BigDecimal.ZERO.compareTo(totalDiscountValue.getDiscountPercentage()) < 0) %>">
-
-						<%
-						CommerceMoney totalDiscountAmount = totalDiscountValue.getDiscountAmount();
-						%>
-
-						<dt><liferay-ui:message key="delivery-discount" /></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(totalDiscountAmount.format(locale)) %></dd>
-						<dt></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(commerceOrderContentDisplayContext.getFormattedPercentage(totalDiscountValue.getDiscountPercentage())) %></dd>
-					</c:if>
-				</dl>
-			</div>
-
-			<div class="commerce-panel__content">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="total" /></dt>
-					<dd class="text-right"><%= HtmlUtil.escape(totalOrder.format(locale)) %></dd>
-				</dl>
-			</div>
-		</div>
+	<div class="col-12">
+		<commerce-ui:panel
+			title='<%= LanguageUtil.get(request, "order-summary") %>'
+		>
+			<commerce-ui:summary
+				items="<%= commerceOrderContentDisplayContext.getSummary() %>"
+			/>
+		</commerce-ui:panel>
 	</div>
 </div>
 

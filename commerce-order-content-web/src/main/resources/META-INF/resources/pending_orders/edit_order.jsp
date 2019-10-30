@@ -21,108 +21,14 @@ CommerceOrderContentDisplayContext commerceOrderContentDisplayContext = (Commerc
 
 CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrder();
 
-long billingCommerceAddressId = BeanParamUtil.getLong(commerceOrder, request, "billingAddressId");
-long shippingCommerceAddressId = BeanParamUtil.getLong(commerceOrder, request, "shippingAddressId");
-
-CommerceAddress billingCommerceAddress = commerceOrder.getBillingAddress();
-CommerceAddress shippingCommerceAddress = commerceOrder.getShippingAddress();
-
-CommerceOrderPrice commerceOrderPrice = commerceOrderContentDisplayContext.getCommerceOrderPrice();
-
-CommerceMoney shippingValue = commerceOrderPrice.getShippingValue();
-CommerceDiscountValue shippingDiscountValue = commerceOrderPrice.getShippingDiscountValue();
-CommerceMoney subtotal = commerceOrderPrice.getSubtotal();
-CommerceDiscountValue subtotalDiscountValue = commerceOrderPrice.getSubtotalDiscountValue();
-CommerceMoney taxValue = commerceOrderPrice.getTaxValue();
-CommerceDiscountValue totalDiscountValue = commerceOrderPrice.getTotalDiscountValue();
-CommerceMoney totalOrder = commerceOrderPrice.getTotal();
-
 List<CommerceOrderValidatorResult> commerceOrderValidatorResults = new ArrayList<>();
-
-CommerceAccount commerceAccount = commerceOrderContentDisplayContext.getCommerceAccount();
-
-if (commerceOrder != null) {
-	commerceAccount = commerceOrder.getCommerceAccount();
-}
-
-List<CommerceAddress> shippingAddresses = commerceOrderContentDisplayContext.getShippingCommerceAddresses(commerceAccount.getCommerceAccountId(), commerceAccount.getCompanyId());
-List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getBillingCommerceAddresses(commerceAccount.getCommerceAccountId(), commerceAccount.getCompanyId());
 %>
 
 <portlet:actionURL name="editCommerceOrder" var="editCommerceOrderActionURL">
 	<portlet:param name="mvcRenderCommandName" value="editCommerceOrder" />
 </portlet:actionURL>
 
-<%@ include file="/configuration/management_bar.jspf" %>
-
-<commerce-ui:modal
-	id="billing-address-modal"
-	url="http://localhost:8080/group/minium/pending-orders"
-/>
-
-<commerce-ui:panel
-	title="Info"
->
-	<div class="row vertically-divided">
-		<div class="col-sm-4">
-			<commerce-ui:info-box
-				actionLabel="Edit"
-				actionTargetId="billing-address-modal"
-				elementClasses="py-3"
-				title="Billing Address"
-			>
-				PO Box 467 New York NY 10002
-			</commerce-ui:info-box>
-
-			<commerce-ui:info-box
-				actionLabel="Edit"
-				actionTargetId="shipping-address-modal"
-				elementClasses="py-3"
-				title="Shipping Address"
-			>
-				PO Box 467 New York NY 10002
-			</commerce-ui:info-box>
-		</div>
-
-		<div class="col-sm-4">
-			<commerce-ui:info-box
-				actionLabel="Edit"
-				actionTargetId="purchase-order-number-modal"
-				elementClasses="py-3"
-				title="Purchase Order Number"
-			>
-				#56735234
-			</commerce-ui:info-box>
-
-			<commerce-ui:info-box
-				actionLabel="Edit"
-				actionTargetId="request-delivery-date-modal"
-				elementClasses="py-3"
-				title="Request Delivery Date"
-			>
-				Aug 24, 2019
-			</commerce-ui:info-box>
-		</div>
-
-		<div class="col-sm-4">
-			<commerce-ui:info-box
-				actionLabel="Edit"
-				actionTargetId="edit-order-notes-modal"
-				elementClasses="py-3"
-				title="Order Notes"
-			>
-				Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
-			</commerce-ui:info-box>
-
-			<commerce-ui:info-box
-				elementClasses="py-3"
-				title="Order Date"
-			>
-				Jul 12, 2019
-			</commerce-ui:info-box>
-		</div>
-	</div>
-</commerce-ui:panel>
+<%@ include file="/management_bar.jspf" %>
 
 <aui:form action="<%= editCommerceOrderActionURL %>" cssClass="order-details-container" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
@@ -149,207 +55,226 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 
 	</liferay-ui:error>
 
-	<aui:model-context bean="<%= commerceOrder %>" model="<%= CommerceOrder.class %>" />
+	<liferay-portlet:renderURL var="editBillingAddressURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+		<portlet:param name="mvcRenderCommandName" value="editCommerceOrderBillingAddress" />
+		<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	</liferay-portlet:renderURL>
 
-	<div class="commerce-panel">
-		<div class="commerce-panel__content">
-			<div class="align-items-center row">
-				<div class="col-md-3">
-					<div class="commerce-order-title">
-						<%= HtmlUtil.escape(commerceAccount.getName()) %>
-					</div>
-				</div>
+	<commerce-ui:modal
+		closeOnSubmit="<%= true %>"
+		id="billing-address-modal"
+		showCancel="<%= true %>"
+		showSubmit="<%= true %>"
+		size="lg"
+		title='<%= LanguageUtil.get(request, "billing-address") %>'
+		url="<%= editBillingAddressURL %>"
+	/>
 
-				<div class="col-md-3">
-					<dl class="commerce-list">
-						<dt><liferay-ui:message key="total" /></dt>
-						<dd><%= HtmlUtil.escape(totalOrder.format(locale)) %></dd>
-					</dl>
-				</div>
+	<liferay-portlet:renderURL var="editShippingAddressURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+		<portlet:param name="mvcRenderCommandName" value="editCommerceOrderShippingAddress" />
+		<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	</liferay-portlet:renderURL>
 
-				<div class="col-md-3">
-					<dl class="commerce-list">
-						<dt><liferay-ui:message key="notes" /></dt>
-						<dd>
+	<commerce-ui:modal
+		closeOnSubmit="<%= true %>"
+		id="shipping-address-modal"
+		showCancel="<%= true %>"
+		showSubmit="<%= true %>"
+		size="lg"
+		title='<%= LanguageUtil.get(request, "shipping-address") %>'
+		url="<%= editShippingAddressURL %>"
+	/>
 
-							<%
-							request.setAttribute("order_notes.jsp-showLabel", Boolean.TRUE);
-							request.setAttribute("order_notes.jsp-taglibLinkCssClass", "link-outline link-outline-borderless link-outline-secondary lfr-icon-item-reverse");
-							%>
+	<liferay-portlet:renderURL var="editPurchaseOrderNumberURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+		<portlet:param name="mvcRenderCommandName" value="editCommerceOrderPurchaseOrderNumber" />
+		<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	</liferay-portlet:renderURL>
 
-							<liferay-util:include page="/pending_orders/order_notes.jsp" servletContext="<%= application %>" />
-						</dd>
-					</dl>
-				</div>
-			</div>
-		</div>
+	<commerce-ui:modal
+		closeOnSubmit="<%= true %>"
+		id="purchase-order-number-modal"
+		showCancel="<%= true %>"
+		showSubmit="<%= true %>"
+		size="lg"
+		title='<%= LanguageUtil.get(request, "purchase-order-number") %>'
+		url="<%= editPurchaseOrderNumberURL %>"
+	/>
 
-		<div class="commerce-panel__content">
-			<div class="align-items-center row">
-				<div class="col-md-3">
-					<dl class="commerce-list">
-						<dt><liferay-ui:message key="account-id" /></dt>
-						<dd><%= commerceAccount.getCommerceAccountId() %></dd>
-					</dl>
-				</div>
+	<liferay-portlet:renderURL var="editRequestedDeliveryDateURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+		<portlet:param name="mvcRenderCommandName" value="editCommerceOrderRequestedDeliveryDate" />
+		<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	</liferay-portlet:renderURL>
 
-				<div class="col-md-3">
-					<dl class="commerce-list">
-						<dt><liferay-ui:message key="order-id" /></dt>
-						<dd><%= commerceOrder.getCommerceOrderId() %></dd>
-					</dl>
-				</div>
+	<commerce-ui:modal
+		closeOnSubmit="<%= true %>"
+		id="requested-delivery-date-modal"
+		showCancel="<%= true %>"
+		showSubmit="<%= true %>"
+		size="lg"
+		title='<%= LanguageUtil.get(request, "requested-delivery-date") %>'
+		url="<%= editRequestedDeliveryDateURL %>"
+	/>
 
-				<div class="col-md-3">
-					<dl class="commerce-list">
-						<dt><liferay-ui:message key="order-date" /></dt>
-						<dd>
-							<%= commerceOrderContentDisplayContext.getCommerceOrderDate(commerceOrder) %>
-							<%= commerceOrderContentDisplayContext.getCommerceOrderTime(commerceOrder) %>
-						</dd>
-					</dl>
-				</div>
-			</div>
-		</div>
-	</div>
+	<liferay-portlet:renderURL var="editPrintedNoteURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+		<portlet:param name="mvcRenderCommandName" value="editCommerceOrderPrintedNote" />
+		<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	</liferay-portlet:renderURL>
 
-	<c:if test="<%= commerceOrderContentDisplayContext.isShowPurchaseOrderNumber() %>">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="commerce-panel">
-					<div class="commerce-panel__title"><liferay-ui:message key="purchase-order-number" /></div>
-					<div class="commerce-panel__content">
-						<div class="row">
-							<div class="col-md-6">
-								<dl class="commerce-list">
-									<c:choose>
-										<c:when test="<%= commerceOrderContentDisplayContext.hasModelPermission(commerceOrder, ActionKeys.UPDATE) %>">
-											<aui:input cssClass="commerce-input" inlineField="<%= true %>" label="" name="purchaseOrderNumber" wrappedField="<%= false %>" />
-										</c:when>
-										<c:otherwise>
-											<%= commerceOrder.getPurchaseOrderNumber() %>
-										</c:otherwise>
-									</c:choose>
-								</dl>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</c:if>
+	<commerce-ui:modal
+		closeOnSubmit="<%= true %>"
+		id="printed-note-modal"
+		showCancel="<%= true %>"
+		showSubmit="<%= true %>"
+		size="lg"
+		title='<%= LanguageUtil.get(request, "printed-note") %>'
+		url="<%= editPrintedNoteURL %>"
+	/>
 
 	<div class="row">
-		<div class="col-md-6">
-			<div class="commerce-panel">
-				<div class="commerce-panel__title"><liferay-ui:message key="billing-address" /></div>
-				<div class="commerce-panel__content">
-					<div class="row">
-						<div class="col-md-12">
+		<div class="col-12">
+			<commerce-ui:panel
+				actionUrl="<%= editBillingAddressURL %>"
+				elementClasses="flex-fill"
+				title='<%= LanguageUtil.get(request, "info") %>'
+			>
+				<div class="row vertically-divided">
+					<div class="col-md-4">
+
+						<%
+						CommerceAddress billingAddress = commerceOrder.getBillingAddress();
+						%>
+
+						<commerce-ui:info-box
+							actionLabel='<%= LanguageUtil.get(request, (billingAddress == null) ? "add" : "edit") %>'
+							actionTargetId="billing-address-modal"
+							actionUrl="<%= editBillingAddressURL %>"
+							elementClasses="py-3"
+							title='<%= LanguageUtil.get(request, "billing-address") %>'
+						>
 							<c:choose>
-								<c:when test="<%= commerceOrderContentDisplayContext.hasModelPermission(commerceOrder, ActionKeys.UPDATE) %>">
-									<dl class="commerce-list">
-										<aui:select cssClass="commerce-input" inlineField="<%= true %>" label="" name="billingAddressId" wrappedField="<%= false %>">
-
-											<%
-											for (CommerceAddress commerceAddress : billingAddresses) {
-											%>
-
-												<aui:option label="<%= commerceAddress.getName() %>" selected="<%= billingCommerceAddressId == commerceAddress.getCommerceAddressId() %>" value="<%= commerceAddress.getCommerceAddressId() %>" />
-
-											<%
-											}
-											%>
-
-										</aui:select>
-									</dl>
+								<c:when test="<%= billingAddress == null %>">
+									<span class="text-muted">
+										<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									</span>
 								</c:when>
 								<c:otherwise>
-									<c:if test="<%= billingCommerceAddress != null %>">
-										<%= billingCommerceAddress.getStreet1() %><br />
-										<%= billingCommerceAddress.getCity() + StringPool.SPACE + billingCommerceAddress.getZip() %>
-									</c:if>
+									<%= HtmlUtil.escape(commerceOrderContentDisplayContext.getDescriptiveCommerceAddress(billingAddress)) %>
 								</c:otherwise>
 							</c:choose>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+						</commerce-ui:info-box>
 
-		<div class="col-md-6">
-			<div class="commerce-panel">
-				<div class="commerce-panel__title"><liferay-ui:message key="shipping-address" /></div>
-				<div class="commerce-panel__content">
-					<div class="row">
-						<div class="col-md-12">
+						<%
+						CommerceAddress shippingAddress = commerceOrder.getShippingAddress();
+						%>
+
+						<commerce-ui:info-box
+							actionLabel='<%= LanguageUtil.get(request, (shippingAddress == null) ? "add" : "edit") %>'
+							actionTargetId="shipping-address-modal"
+							actionUrl="<%= editShippingAddressURL %>"
+							elementClasses="py-3"
+							title='<%= LanguageUtil.get(request, "shipping-address") %>'
+						>
 							<c:choose>
-								<c:when test="<%= commerceOrderContentDisplayContext.hasModelPermission(commerceOrder, ActionKeys.UPDATE) %>">
-									<dl class="commerce-list">
-										<aui:select cssClass="commerce-input" inlineField="<%= true %>" label="" name="shippingAddressId" wrappedField="<%= false %>">
-
-											<%
-											for (CommerceAddress commerceAddress : shippingAddresses) {
-											%>
-
-												<aui:option label="<%= commerceAddress.getName() %>" selected="<%= shippingCommerceAddressId == commerceAddress.getCommerceAddressId() %>" value="<%= commerceAddress.getCommerceAddressId() %>" />
-
-											<%
-											}
-											%>
-
-										</aui:select>
-									</dl>
+								<c:when test="<%= shippingAddress == null %>">
+									<span class="text-muted">
+										<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									</span>
 								</c:when>
 								<c:otherwise>
-									<c:if test="<%= shippingCommerceAddress != null %>">
-										<%= shippingCommerceAddress.getStreet1() %><br />
-										<%= shippingCommerceAddress.getCity() + StringPool.SPACE + shippingCommerceAddress.getZip() %>
-									</c:if>
+									<%= HtmlUtil.escape(commerceOrderContentDisplayContext.getDescriptiveCommerceAddress(shippingAddress)) %>
 								</c:otherwise>
 							</c:choose>
-						</div>
+						</commerce-ui:info-box>
+					</div>
+
+					<div class="col-md-4">
+
+						<%
+						String purchaseOrderNumber = commerceOrder.getPurchaseOrderNumber();
+						%>
+
+						<commerce-ui:info-box
+							actionLabel='<%= LanguageUtil.get(request, Validator.isNull(purchaseOrderNumber) ? "add" : "edit") %>'
+							actionTargetId="purchase-order-number-modal"
+							actionUrl="<%= editPurchaseOrderNumberURL %>"
+							elementClasses="py-3"
+							title='<%= LanguageUtil.get(request, "purchase-order-number") %>'
+						>
+							<c:choose>
+								<c:when test="<%= Validator.isNull(purchaseOrderNumber) %>">
+									<span class="text-muted">
+										<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									</span>
+								</c:when>
+								<c:otherwise>
+									<%= HtmlUtil.escape(purchaseOrderNumber) %>
+								</c:otherwise>
+							</c:choose>
+						</commerce-ui:info-box>
+
+						<%
+						Date requestedDeliveryDate = commerceOrder.getRequestedDeliveryDate();
+						%>
+
+						<commerce-ui:info-box
+							actionLabel='<%= LanguageUtil.get(request, (requestedDeliveryDate == null) ? "add" : "edit") %>'
+							actionTargetId="requested-delivery-date-modal"
+							actionUrl="<%= editRequestedDeliveryDateURL %>"
+							elementClasses="py-3"
+							title='<%= LanguageUtil.get(request, "requested-delivery-date") %>'
+						>
+							<c:choose>
+								<c:when test="<%= requestedDeliveryDate == null %>">
+									<span class="text-muted">
+										<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									</span>
+								</c:when>
+								<c:otherwise>
+									<%= commerceOrderContentDisplayContext.getCommerceOrderDateTime(requestedDeliveryDate) %>
+								</c:otherwise>
+							</c:choose>
+						</commerce-ui:info-box>
+					</div>
+
+					<%
+					String printedNote = commerceOrder.getPrintedNote();
+
+					String commerceOrderDateTime = commerceOrderContentDisplayContext.getCommerceOrderDateTime(commerceOrder.getCreateDate());
+					%>
+
+					<div class="col-md-4">
+						<commerce-ui:info-box
+							actionLabel='<%= LanguageUtil.get(request, Validator.isNull(printedNote) ? "add" : "edit") %>'
+							actionTargetId="printed-note-modal"
+							actionUrl="<%= editPrintedNoteURL %>"
+							elementClasses="py-3"
+							title='<%= LanguageUtil.get(request, "printed-note") %>'
+						>
+							<c:choose>
+								<c:when test="<%= Validator.isNull(printedNote) %>">
+									<span class="text-muted">
+										<%= LanguageUtil.get(request, "click-add-to-insert") %>
+									</span>
+								</c:when>
+								<c:otherwise>
+									<%= HtmlUtil.escape(printedNote) %>
+								</c:otherwise>
+							</c:choose>
+						</commerce-ui:info-box>
+
+						<commerce-ui:info-box
+							elementClasses="py-3"
+							title='<%= LanguageUtil.get(request, "order-date") %>'
+						>
+							<%= HtmlUtil.escape(commerceOrderDateTime) %>
+						</commerce-ui:info-box>
 					</div>
 				</div>
-			</div>
+			</commerce-ui:panel>
 		</div>
 	</div>
 
-	<liferay-ui:icon-menu
-		direction="right"
-		icon="<%= StringPool.BLANK %>"
-		markupView="lexicon"
-		message="<%= StringPool.BLANK %>"
-		showWhenSingleIcon="<%= true %>"
-		triggerCssClass="btn btn-lg btn-monospaced btn-primary thumb-menu"
-	>
-		<liferay-ui:icon
-			message="print"
-			url='<%= "javascript:window.print();" %>'
-		/>
-
-		<c:if test="<%= commerceOrderContentDisplayContext.hasModelPermission(commerceOrder, ActionKeys.DELETE) %>">
-			<portlet:actionURL name="editCommerceOrder" var="deleteURL">
-				<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
-				<portlet:param name="redirect" value="<%= currentURL %>" />
-				<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
-			</portlet:actionURL>
-
-			<liferay-ui:icon-delete
-				message="delete"
-				url="<%= deleteURL %>"
-			/>
-		</c:if>
-	</liferay-ui:icon-menu>
-
 	<div class="commerce-cta is-visible">
-		<clay:button
-			elementClasses="btn-fixed btn-lg"
-			label='<%= LanguageUtil.get(request, "save") %>'
-			style="secondary"
-			type="submit"
-		/>
-
 		<liferay-commerce:order-transitions
 			commerceOrderId="<%= commerceOrder.getCommerceOrderId() %>"
 			cssClass="btn btn-fixed btn-lg btn-primary ml-3"
@@ -358,7 +283,7 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 </aui:form>
 
 <div class="row">
-	<div class="col-md-9">
+	<div class="col-12">
 		<commerce-ui:table
 			dataProviderKey="commercePendingOrderItems"
 			itemPerPage="<%= 5 %>"
@@ -369,64 +294,32 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 		/>
 	</div>
 
-	<div class="col-md-3">
-		<div class="commerce-panel">
-			<div class="commerce-panel__content">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="subtotal" /></dt>
-					<dd class="text-right"><%= HtmlUtil.escape(subtotal.format(locale)) %></dd>
+	<div class="col-12">
+		<liferay-portlet:renderURL var="editOrderSummaryURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+			<portlet:param name="mvcRenderCommandName" value="editCommerceOrderSummary" />
+			<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+		</liferay-portlet:renderURL>
 
-					<c:if test="<%= (subtotalDiscountValue != null) && (BigDecimal.ZERO.compareTo(subtotalDiscountValue.getDiscountPercentage()) < 0) %>">
+		<commerce-ui:modal
+			closeOnSubmit="<%= true %>"
+			id="order-summary-modal"
+			showCancel="<%= true %>"
+			showSubmit="<%= true %>"
+			size="lg"
+			title='<%= LanguageUtil.get(request, "order-summary") %>'
+			url="<%= editOrderSummaryURL %>"
+		/>
 
-						<%
-						CommerceMoney subtotalDiscountAmount = subtotalDiscountValue.getDiscountAmount();
-						%>
-
-						<dt><liferay-ui:message key="subtotal-discount" /></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(subtotalDiscountAmount.format(locale)) %></dd>
-						<dt></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(commerceOrderContentDisplayContext.getFormattedPercentage(subtotalDiscountValue.getDiscountPercentage())) %></dd>
-					</c:if>
-
-					<dt><liferay-ui:message key="delivery" /></dt>
-					<dd class="text-right"><%= HtmlUtil.escape(shippingValue.format(locale)) %></dd>
-
-					<c:if test="<%= (shippingDiscountValue != null) && (BigDecimal.ZERO.compareTo(shippingDiscountValue.getDiscountPercentage()) < 0) %>">
-
-						<%
-						CommerceMoney shippingDiscountAmount = shippingDiscountValue.getDiscountAmount();
-						%>
-
-						<dt><liferay-ui:message key="delivery-discount" /></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(shippingDiscountAmount.format(locale)) %></dd>
-						<dt></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(commerceOrderContentDisplayContext.getFormattedPercentage(shippingDiscountValue.getDiscountPercentage())) %></dd>
-					</c:if>
-
-					<dt><liferay-ui:message key="tax" /></dt>
-					<dd class="text-right"><%= HtmlUtil.escape(taxValue.format(locale)) %></dd>
-
-					<c:if test="<%= (totalDiscountValue != null) && (BigDecimal.ZERO.compareTo(totalDiscountValue.getDiscountPercentage()) < 0) %>">
-
-						<%
-						CommerceMoney totalDiscountAmount = totalDiscountValue.getDiscountAmount();
-						%>
-
-						<dt><liferay-ui:message key="delivery-discount" /></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(totalDiscountAmount.format(locale)) %></dd>
-						<dt></dt>
-						<dd class="text-right"><%= HtmlUtil.escape(commerceOrderContentDisplayContext.getFormattedPercentage(totalDiscountValue.getDiscountPercentage())) %></dd>
-					</c:if>
-				</dl>
-			</div>
-
-			<div class="commerce-panel__content">
-				<dl class="commerce-list">
-					<dt><liferay-ui:message key="total" /></dt>
-					<dd class="text-right"><%= HtmlUtil.escape(totalOrder.format(locale)) %></dd>
-				</dl>
-			</div>
-		</div>
+		<commerce-ui:panel
+			actionLabel='<%= LanguageUtil.get(request, "edit") %>'
+			actionTargetId="order-summary-modal"
+			actionUrl="<%= editOrderSummaryURL %>"
+			title='<%= LanguageUtil.get(request, "order-summary") %>'
+		>
+			<commerce-ui:summary
+				items="<%= commerceOrderContentDisplayContext.getSummary() %>"
+			/>
+		</commerce-ui:panel>
 	</div>
 </div>
 
@@ -435,15 +328,15 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 <%@ include file="/pending_orders/transition.jspf" %>
 
 <aui:script use="aui-base">
-	var orderTransition = A.one('#<portlet:namespace />orderTransition');
+var orderTransition = A.one('#<portlet:namespace />orderTransition');
 
-	if (orderTransition) {
-		orderTransition.delegate(
-			'click',
-			function(event) {
-				<portlet:namespace />transition(event);
-			},
-			'.transition-link'
-		);
-	}
+if (orderTransition) {
+	orderTransition.delegate(
+		'click',
+		function(event) {
+			<portlet:namespace />transition(event);
+		},
+		'.transition-link'
+	);
+}
 </aui:script>
