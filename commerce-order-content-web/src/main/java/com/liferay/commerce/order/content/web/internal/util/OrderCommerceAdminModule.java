@@ -19,10 +19,9 @@ import com.liferay.commerce.admin.constants.CommerceAdminConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.content.web.internal.display.context.CommerceOrderContentDisplayContext;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelService;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
-import com.liferay.commerce.service.CommerceAddressService;
+import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceShipmentItemService;
@@ -104,10 +103,9 @@ public class OrderCommerceAdminModule implements CommerceAdminModule {
 			CommerceOrderContentDisplayContext
 				commerceOrderContentDisplayContext =
 					new CommerceOrderContentDisplayContext(
-						_commerceAddressService, _commerceChannelLocalService,
+						_commerceChannelLocalService, _commerceOrderItemService,
 						_commerceOrderNoteService,
 						_commerceOrderPriceCalculation, _commerceOrderService,
-						_commercePaymentMethodGroupRelService,
 						_commerceShipmentItemService, httpServletRequest,
 						_modelResourcePermission, _portletResourcePermission);
 
@@ -131,10 +129,10 @@ public class OrderCommerceAdminModule implements CommerceAdminModule {
 		OrderCommerceAdminModule.class);
 
 	@Reference
-	private CommerceAddressService _commerceAddressService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommerceChannelLocalService _commerceChannelLocalService;
+	private CommerceOrderItemService _commerceOrderItemService;
 
 	@Reference
 	private CommerceOrderNoteService _commerceOrderNoteService;
@@ -144,10 +142,6 @@ public class OrderCommerceAdminModule implements CommerceAdminModule {
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
-
-	@Reference
-	private CommercePaymentMethodGroupRelService
-		_commercePaymentMethodGroupRelService;
 
 	@Reference
 	private CommerceShipmentItemService _commerceShipmentItemService;

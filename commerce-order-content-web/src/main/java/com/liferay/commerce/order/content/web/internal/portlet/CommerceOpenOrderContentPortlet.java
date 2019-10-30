@@ -18,10 +18,9 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.content.web.internal.display.context.CommerceOrderContentDisplayContext;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelService;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
-import com.liferay.commerce.service.CommerceAddressService;
+import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceShipmentItemService;
@@ -99,10 +98,9 @@ public class CommerceOpenOrderContentPortlet extends MVCPortlet {
 			CommerceOrderContentDisplayContext
 				commerceOrderContentDisplayContext =
 					new CommerceOrderContentDisplayContext(
-						_commerceAddressService, _commerceChannelLocalService,
+						_commerceChannelLocalService, _commerceOrderItemService,
 						_commerceOrderNoteService,
 						_commerceOrderPriceCalculation, _commerceOrderService,
-						_commercePaymentMethodGroupRelService,
 						_commerceShipmentItemService,
 						_portal.getHttpServletRequest(renderRequest),
 						_modelResourcePermission, _portletResourcePermission);
@@ -122,10 +120,10 @@ public class CommerceOpenOrderContentPortlet extends MVCPortlet {
 		CommerceOpenOrderContentPortlet.class);
 
 	@Reference
-	private CommerceAddressService _commerceAddressService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommerceChannelLocalService _commerceChannelLocalService;
+	private CommerceOrderItemService _commerceOrderItemService;
 
 	@Reference
 	private CommerceOrderNoteService _commerceOrderNoteService;
@@ -135,10 +133,6 @@ public class CommerceOpenOrderContentPortlet extends MVCPortlet {
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
-
-	@Reference
-	private CommercePaymentMethodGroupRelService
-		_commercePaymentMethodGroupRelService;
 
 	@Reference
 	private CommerceShipmentItemService _commerceShipmentItemService;
