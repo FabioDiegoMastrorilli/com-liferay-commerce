@@ -40,6 +40,7 @@ import com.liferay.commerce.price.CommerceOrderPriceCalculation;
 import com.liferay.commerce.product.display.context.util.CPRequestHelper;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
@@ -54,6 +55,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.portlet.PortletQName;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -84,6 +88,7 @@ import javax.servlet.http.HttpServletRequest;
 public class CommerceOrderContentDisplayContext {
 
 	public CommerceOrderContentDisplayContext(
+			CommerceAddressService commerceAddressService,
 			CommerceChannelLocalService commerceChannelLocalService,
 			CommerceOrderHelper commerceOrderHelper,
 			CommerceOrderItemService commerceOrderItemService,
@@ -96,6 +101,7 @@ public class CommerceOrderContentDisplayContext {
 			PortletResourcePermission portletResourcePermission)
 		throws PortalException {
 
+		_commerceAddressService = commerceAddressService;
 		_commerceChannelLocalService = commerceChannelLocalService;
 		_commerceOrderHelper = commerceOrderHelper;
 		_commerceOrderItemService = commerceOrderItemService;
@@ -136,8 +142,34 @@ public class CommerceOrderContentDisplayContext {
 			_cpRequestHelper.getScopeGroupId());
 	}
 
+	public List<CommerceAddress> getBillingCommerceAddresses()
+		throws PortalException {
+
+		return _commerceAddressService.getBillingCommerceAddresses(
+			_cpRequestHelper.getCompanyId(), CommerceAccount.class.getName(),
+			getCommerceAccountId());
+	}
+
 	public CommerceAccount getCommerceAccount() {
 		return _commerceAccount;
+	}
+
+	public String getCommerceAccountDetailURL(CommerceAccount commerceAccount)
+		throws PortalException {
+
+		PortletURL portletURL = PortletProviderUtil.getPortletURL(
+			_cpRequestHelper.getRequest(), CommerceAccount.class.getName(),
+			PortletProvider.Action.VIEW);
+
+		portletURL.setParameter(
+			"commerceAccountId",
+			String.valueOf(commerceAccount.getCommerceAccountId()));
+
+		portletURL.setParameter(
+			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "backURL",
+			_cpRequestHelper.getCurrentURL());
+
+		return portletURL.toString();
 	}
 
 	public long getCommerceAccountId() {
@@ -271,11 +303,12 @@ public class CommerceOrderContentDisplayContext {
 		return _commerceOrders;
 	}
 
-	public List<ObjectValuePair<Long, String>> getCommerceOrderTransitionOVPs(
-			CommerceOrder commerceOrder, ThemeDisplay themeDisplay)
+	public List<ObjectValuePair<Long, String>> getCommerceOrderTransitionOVPs()
 		throws PortalException {
 
 		List<ObjectValuePair<Long, String>> transitionOVPs = new ArrayList<>();
+
+		CommerceOrder commerceOrder = getCommerceOrder();
 
 		if (commerceOrder == null) {
 			return transitionOVPs;
@@ -290,7 +323,7 @@ public class CommerceOrderContentDisplayContext {
 
 		if (commerceOrder.isOpen() && commerceOrder.isPending() &&
 			_modelResourcePermission.contains(
-				themeDisplay.getPermissionChecker(), commerceOrder,
+				_cpRequestHelper.getPermissionChecker(), commerceOrder,
 				CommerceOrderActionKeys.APPROVE_COMMERCE_ORDER)) {
 
 			approveOVP = new ObjectValuePair<>(0L, "approve");
@@ -300,7 +333,7 @@ public class CommerceOrderContentDisplayContext {
 
 		if (commerceOrder.isOpen() && commerceOrder.isApproved() &&
 			_modelResourcePermission.contains(
-				themeDisplay.getPermissionChecker(), commerceOrder,
+				_cpRequestHelper.getPermissionChecker(), commerceOrder,
 				CommerceOrderActionKeys.CHECKOUT_COMMERCE_ORDER)) {
 
 			transitionOVPs.add(new ObjectValuePair<>(0L, "checkout"));
@@ -309,7 +342,7 @@ public class CommerceOrderContentDisplayContext {
 		if (commerceOrder.isOpen() && commerceOrder.isDraft() &&
 			!commerceOrder.isEmpty() &&
 			_modelResourcePermission.contains(
-				themeDisplay.getPermissionChecker(), commerceOrder,
+				_cpRequestHelper.getPermissionChecker(), commerceOrder,
 				ActionKeys.UPDATE)) {
 
 			transitionOVPs.add(new ObjectValuePair<>(0L, "submit"));
@@ -319,7 +352,7 @@ public class CommerceOrderContentDisplayContext {
 
 		transitionOVPs.addAll(
 			_commerceOrderHelper.getWorkflowTransitions(
-				themeDisplay.getUserId(), commerceOrder));
+				_cpRequestHelper.getUserId(), commerceOrder));
 
 		if (approveOVP != null) {
 			for (int i = start; i < transitionOVPs.size(); i++) {
@@ -476,6 +509,14 @@ public class CommerceOrderContentDisplayContext {
 		return portletURL;
 	}
 
+	public List<CommerceAddress> getShippingCommerceAddresses()
+		throws PortalException {
+
+		return _commerceAddressService.getShippingCommerceAddresses(
+			_cpRequestHelper.getCompanyId(), CommerceAccount.class.getName(),
+			getCommerceAccountId());
+	}
+
 	public List<SummaryItem> getSummary() throws PortalException {
 		List<SummaryItem> summary = new ArrayList<>();
 
@@ -524,6 +565,9 @@ public class CommerceOrderContentDisplayContext {
 
 			discountSummaryItem.setValue(
 				discountAmount.format(_cpRequestHelper.getLocale()));
+		}
+		else {
+			discountSummaryItem.setValue("--");
 		}
 
 		grandTotalSummaryItem.setLabel(
@@ -619,6 +663,7 @@ public class CommerceOrderContentDisplayContext {
 		CommerceOrderContentDisplayContext.class);
 
 	private final CommerceAccount _commerceAccount;
+	private final CommerceAddressService _commerceAddressService;
 	private final CommerceChannelLocalService _commerceChannelLocalService;
 	private final CommerceContext _commerceContext;
 	private final CommerceOrderContentPortletInstanceConfiguration
