@@ -32,11 +32,17 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 	<aui:model-context bean="<%= commerceOrder %>" model="<%= CommerceOrder.class %>" />
 
 	<div class="border-0 sheet">
-		<aui:input label="items-subtotal-discount" name="subtotalDiscountAmount" wrapperCssClass="form-group-item" />
+		<aui:input label="items-subtotal-discount" name="subtotalDiscountAmount" type="text" wrapperCssClass="form-group-item">
+			<aui:validator name="number" />
+		</aui:input>
 
-		<aui:input label="order-discount" name="totalDiscountAmount" wrapperCssClass="form-group-item" />
+		<aui:input label="order-discount" name="totalDiscountAmount" type="text" wrapperCssClass="form-group-item">
+			<aui:validator name="number" />
+		</aui:input>
 
-		<aui:input label="shipping-and-handing-discount" name="shippingDiscountAmount" wrapperCssClass="form-group-item" />
+		<aui:input label="shipping-and-handing-discount" name="shippingDiscountAmount" type="text" wrapperCssClass="form-group-item">
+			<aui:validator name="number" />
+		</aui:input>
 	</div>
 
 	<aui:button type="submit" />

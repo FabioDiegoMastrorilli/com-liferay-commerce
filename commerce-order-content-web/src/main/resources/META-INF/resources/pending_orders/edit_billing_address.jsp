@@ -35,6 +35,20 @@ long commerceRegionId = BeanParamUtil.getLong(commerceAddress, request, "commerc
 
 	<aui:model-context bean="<%= commerceAddress %>" model="<%= CommerceAddress.class %>" />
 
+	<div class="address-selection border-0 sheet">
+
+		<%
+		for (CommerceAddress billingCommerceAddress : commerceOrderContentDisplayContext.getBillingCommerceAddresses()) {
+		%>
+
+			<aui:input checked="<%= billingCommerceAddress.isSameAddress(commerceOrder.getBillingAddress()) %>" label="<%= commerceOrderContentDisplayContext.getDescriptiveCommerceAddress(billingCommerceAddress) %>" name="commerceAddressId" type="radio" value="<%= billingCommerceAddress.getCommerceAddressId() %>" wrapperCssClass="form-group-item" />
+
+		<%
+		}
+		%>
+
+	</div>
+
 	<div class="address-fields border-0 sheet">
 		<aui:input name="name" wrapperCssClass="form-group-item" />
 
