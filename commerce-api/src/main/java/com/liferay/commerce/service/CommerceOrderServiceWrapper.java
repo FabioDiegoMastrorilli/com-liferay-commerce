@@ -469,6 +469,19 @@ public class CommerceOrderServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.model.CommerceOrder updateDiscountAmounts(
+			long commerceOrderId, java.math.BigDecimal subtotalDiscountAmount,
+			java.math.BigDecimal totalDiscountAmount,
+			java.math.BigDecimal shippingDiscountAmount,
+			com.liferay.commerce.context.CommerceContext commerceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderService.updateDiscountAmounts(
+			commerceOrderId, subtotalDiscountAmount, totalDiscountAmount,
+			shippingDiscountAmount, commerceContext);
+	}
+
+	@Override
 	public com.liferay.commerce.model.CommerceOrder updateInfo(
 			long commerceOrderId, String printedNote,
 			int requestedDeliveryDateMonth, int requestedDeliveryDateDay,

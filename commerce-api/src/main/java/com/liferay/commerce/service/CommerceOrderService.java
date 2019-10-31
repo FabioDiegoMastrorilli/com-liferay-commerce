@@ -286,6 +286,12 @@ public interface CommerceOrderService extends BaseService {
 			long commerceOrderId, ServiceContext serviceContext)
 		throws PortalException;
 
+	public CommerceOrder updateDiscountAmounts(
+			long commerceOrderId, BigDecimal subtotalDiscountAmount,
+			BigDecimal totalDiscountAmount, BigDecimal shippingDiscountAmount,
+			CommerceContext commerceContext)
+		throws PortalException;
+
 	public CommerceOrder updateInfo(
 			long commerceOrderId, String printedNote,
 			int requestedDeliveryDateMonth, int requestedDeliveryDateDay,
