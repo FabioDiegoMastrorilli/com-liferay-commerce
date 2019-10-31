@@ -21,6 +21,7 @@ import com.liferay.commerce.order.CommerceOrderHelper;
 import com.liferay.commerce.order.content.web.internal.display.context.CommerceOrderContentDisplayContext;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
@@ -99,8 +100,9 @@ public class CommerceOrderContentPortlet extends MVCPortlet {
 			CommerceOrderContentDisplayContext
 				commerceOrderContentDisplayContext =
 					new CommerceOrderContentDisplayContext(
-						_commerceChannelLocalService, _commerceOrderHelper,
-						_commerceOrderItemService, _commerceOrderNoteService,
+						_commerceAddressService, _commerceChannelLocalService,
+						_commerceOrderHelper, _commerceOrderItemService,
+						_commerceOrderNoteService,
 						_commerceOrderPriceCalculation, _commerceOrderService,
 						_commerceShipmentItemService,
 						_portal.getHttpServletRequest(renderRequest),
@@ -119,6 +121,9 @@ public class CommerceOrderContentPortlet extends MVCPortlet {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceOrderContentPortlet.class);
+
+	@Reference
+	private CommerceAddressService _commerceAddressService;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
