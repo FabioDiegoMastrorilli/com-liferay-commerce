@@ -20,9 +20,9 @@ CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 
 <div class="card mb-4">
 	<div class="card-body">
-		<div class="order-mananagement-bar d-lg-flex">
+		<div class="d-lg-flex order-mananagement-bar">
 			<div class="align-items-center d-flex flex-grow-1">
-				<div class="row flex-grow-1">
+				<div class="flex-grow-1 row">
 					<div class="col-auto">
 						<span class="sticker sticker-primary sticker-xl">
 							<span class="sticker-overlay">
@@ -38,16 +38,17 @@ CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 									<%= HtmlUtil.escape(commerceAccount.getName()) %>
 								</h3>
 
-								<span class="user-id">
-									Id:
+								<span class="account-id">
+									<liferay-ui:message arguments="<%= StringPool.BLANK %>" key="id-x" translateArguments="<%= false %>" />
+
 									<clay:link
-										href="#"
-										label="007274"
+										href="<%= commerceOrderContentDisplayContext.getCommerceAccountDetailURL(commerceAccount) %>"
+										label="<%= String.valueOf(commerceAccount.getCommerceAccountId()) %>"
 									/>
 								</span>
 							</div>
 
-							<div class="col border-left">
+							<div class="border-left col">
 								<div>
 									<%= LanguageUtil.format(request, "order-x", commerceOrderContentDisplayContext.getCommerceOrderId()) %>
 								</div>
@@ -58,63 +59,89 @@ CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 							</div>
 						</div>
 					</div>
+
 					<div class="col-auto d-lg-none">
+
 						<%
-							Map<String, String> headerTogglerData = new HashMap<>();
-							headerTogglerData.put("toggle", "collapse");
-							headerTogglerData.put("target", "#navbarNavAltMarkup");
+						Map<String, String> headerTogglerData = new HashMap<>();
+
+						headerTogglerData.put("target", "#navbarNavAltMarkup");
+						headerTogglerData.put("toggle", "collapse");
 						%>
+
 						<clay:button
 							data="<%= headerTogglerData %>"
 							elementClasses="navbar-toggler p-3"
-							type="button"
-							style="secondary"
 							icon="bars"
-							spritemap="/o/admin-theme/images/lexicon/icons.svg"
+							spritemap='<%= themeDisplay.getPathThemeImages() + "/lexicon/icons.svg" %>'
+							style="secondary"
+							type="button"
 						/>
 						<%--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">--%>
-							<%--<span class="navbar-toggler-icon"></span>--%>
+						<%--<span class="navbar-toggler-icon"></span>--%>
 						<%--</button>--%>
 					</div>
 				</div>
 			</div>
 
-			<div id="navbarNavAltMarkup" class="collapse d-lg-flex">
-				<div class="row align-self-center">
-					<div class="header-assigner col-12 mt-3 mt-lg-0 col-lg-auto">
-						<c:if test="<%= true %>">
-							<div id="assigner-root"></div>
-							<aui:script require="commerce-frontend-js/components/assigner/entry.es as assigner">
-								assigner.default(
-									"assigner",
-									"assigner-root",
-									{
-										spritemap: "<%= "/o/minium-theme/images/commerce-icons.svg" %>"
-									}
-								);
-							</aui:script>
-						</c:if>
-					</div>
-					<div class="header-actions col-12 mt-3 mt-lg-0 col-lg-auto">
-						<clay:link
-							buttonStyle="secondary"
-							elementClasses="mr-1"
-							href="#"
-							label="Rejected"
-						/>
+			<div class="collapse d-lg-flex" id="navbarNavAltMarkup">
+				<div class="align-self-center row">
+					<c:if test="<%= commerceOrder.isOpen() %>">
+						<div class="col-12 col-lg-auto header-assigner mt-3 mt-lg-0">
+							<c:if test="<%= true %>">
+								<div id="assigner-root"></div>
 
-						<clay:link
-							buttonStyle="secondary"
-							elementClasses="mr-1"
-							href="#"
-							label="Approved"
-						/>
+								<aui:script require="commerce-frontend-js/components/assigner/entry.es as assigner">
+									assigner.default(
+										"assigner",
+										"assigner-root",
+										{
+											spritemap: '<%= themeDisplay.getPathThemeImages() + "/lexicon/icons.svg" %>'
+										}
+									);
+								</aui:script>
+							</c:if>
+						</div>
+					</c:if>
 
-						<clay:link
-							buttonStyle="primary"
-							href="#"
-							label="Checkout"
-						/>
+					<div class="col-12 col-lg-auto header-actions is-visible mt-3 mt-lg-0" id="<portlet:namespace />orderTransition">
+
+						<%
+						List<ObjectValuePair<Long, String>> commerceOrderTransitionOVPs = commerceOrderContentDisplayContext.getCommerceOrderTransitionOVPs();
+
+						for (ObjectValuePair<Long, String> objectValuePair : commerceOrderTransitionOVPs) {
+							String buttonStyle = "secondary";
+							String elementClasses = "mr-1 transition-link";
+							String href = "javascript:;";
+
+							if (commerceOrderTransitionOVPs.indexOf(objectValuePair) == (commerceOrderTransitionOVPs.size() - 1)) {
+								buttonStyle = "primary";
+								elementClasses = "transition-link";
+							}
+
+							if (objectValuePair.getValue().equals("reorder")) {
+								href = "javascript:" + renderResponse.getNamespace() + "reorderCommerceOrder();";
+							}
+
+							Map<String, String> data = new HashMap<>();
+
+							data.put("commerceOrderId", String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()));
+							data.put("transitionName", objectValuePair.getValue());
+							data.put("workflowTaskId", String.valueOf(objectValuePair.getKey()));
+						%>
+
+							<clay:link
+								buttonStyle="<%= buttonStyle %>"
+								data="<%= data %>"
+								elementClasses="<%= elementClasses %>"
+								href="<%= href %>"
+								label="<%= LanguageUtil.get(request, objectValuePair.getValue()) %>"
+							/>
+
+						<%
+						}
+						%>
+
 					</div>
 				</div>
 			</div>
