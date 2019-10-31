@@ -24,11 +24,11 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 List<CommerceOrderValidatorResult> commerceOrderValidatorResults = new ArrayList<>();
 %>
 
+<%@ include file="/management_bar.jspf" %>
+
 <portlet:actionURL name="editCommerceOrder" var="editCommerceOrderActionURL">
 	<portlet:param name="mvcRenderCommandName" value="editCommerceOrder" />
 </portlet:actionURL>
-
-<%@ include file="/management_bar.jspf" %>
 
 <aui:form action="<%= editCommerceOrderActionURL %>" cssClass="order-details-container" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
@@ -273,13 +273,6 @@ List<CommerceOrderValidatorResult> commerceOrderValidatorResults = new ArrayList
 			</commerce-ui:panel>
 		</div>
 	</div>
-
-	<div class="commerce-cta is-visible">
-		<liferay-commerce:order-transitions
-			commerceOrderId="<%= commerceOrder.getCommerceOrderId() %>"
-			cssClass="btn btn-fixed btn-lg btn-primary ml-3"
-		/>
-	</div>
 </aui:form>
 
 <div class="row">
@@ -295,35 +288,46 @@ List<CommerceOrderValidatorResult> commerceOrderValidatorResults = new ArrayList
 	</div>
 
 	<div class="col-12">
-		<liferay-portlet:renderURL var="editOrderSummaryURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="mvcRenderCommandName" value="editCommerceOrderSummary" />
-			<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
-		</liferay-portlet:renderURL>
+		<c:choose>
+			<c:when test="<%= PortalPermissionUtil.contains(PermissionThreadLocal.getPermissionChecker(), CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES) %>">
+				<liferay-portlet:renderURL var="editOrderSummaryURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+					<portlet:param name="mvcRenderCommandName" value="editCommerceOrderSummary" />
+					<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+				</liferay-portlet:renderURL>
 
-		<commerce-ui:modal
-			closeOnSubmit="<%= true %>"
-			id="order-summary-modal"
-			showCancel="<%= true %>"
-			showSubmit="<%= true %>"
-			size="lg"
-			title='<%= LanguageUtil.get(request, "order-summary") %>'
-			url="<%= editOrderSummaryURL %>"
-		/>
+				<commerce-ui:modal
+					closeOnSubmit="<%= true %>"
+					id="order-summary-modal"
+					showCancel="<%= true %>"
+					showSubmit="<%= true %>"
+					size="lg"
+					title='<%= LanguageUtil.get(request, "order-summary") %>'
+					url="<%= editOrderSummaryURL %>"
+				/>
 
-		<commerce-ui:panel
-			actionLabel='<%= LanguageUtil.get(request, "edit") %>'
-			actionTargetId="order-summary-modal"
-			actionUrl="<%= editOrderSummaryURL %>"
-			title='<%= LanguageUtil.get(request, "order-summary") %>'
-		>
-			<commerce-ui:summary
-				items="<%= commerceOrderContentDisplayContext.getSummary() %>"
-			/>
-		</commerce-ui:panel>
+				<commerce-ui:panel
+					actionLabel='<%= LanguageUtil.get(request, "edit") %>'
+					actionTargetId="order-summary-modal"
+					actionUrl="<%= editOrderSummaryURL %>"
+					title='<%= LanguageUtil.get(request, "order-summary") %>'
+				>
+					<commerce-ui:summary
+						items="<%= commerceOrderContentDisplayContext.getSummary() %>"
+					/>
+				</commerce-ui:panel>
+			</c:when>
+			<c:otherwise>
+				<commerce-ui:panel
+					title='<%= LanguageUtil.get(request, "order-summary") %>'
+				>
+					<commerce-ui:summary
+						items="<%= commerceOrderContentDisplayContext.getSummary() %>"
+					/>
+				</commerce-ui:panel>
+			</c:otherwise>
+		</c:choose>
 	</div>
 </div>
-
-<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderURL" />
 
 <%@ include file="/pending_orders/transition.jspf" %>
 

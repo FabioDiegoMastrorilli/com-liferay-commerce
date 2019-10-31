@@ -40,6 +40,8 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 
 </liferay-ui:error>
 
+<%@ include file="/management_bar.jspf" %>
+
 <div class="row">
 	<div class="col-12">
 		<commerce-ui:panel
@@ -177,8 +179,6 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 		<aui:input name="<%= Constants.CMD %>" type="hidden" />
 		<aui:input name="commerceOrderId" type="hidden" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 	</aui:form>
-
-	<aui:button cssClass="btn btn-lg btn-secondary" onClick='<%= renderResponse.getNamespace() + "reorderCommerceOrder();" %>' value="reorder" />
 </div>
 
 <div class="row">
