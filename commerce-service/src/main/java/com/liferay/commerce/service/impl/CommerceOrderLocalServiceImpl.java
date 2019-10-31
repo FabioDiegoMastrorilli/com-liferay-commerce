@@ -1186,6 +1186,32 @@ public class CommerceOrderLocalServiceImpl
 		return commerceOrderPersistence.update(commerceOrder);
 	}
 
+	@Override
+	public CommerceOrder updateDiscountAmounts(
+			long commerceOrderId, BigDecimal subtotalDiscountAmount,
+			BigDecimal totalDiscountAmount, BigDecimal shippingDiscountAmount,
+			CommerceContext commerceContext)
+		throws PortalException {
+
+		// Update discount amounts
+
+		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
+			commerceOrderId);
+
+		commerceOrder.setSubtotalDiscountAmount(subtotalDiscountAmount);
+		commerceOrder.setTotalDiscountAmount(totalDiscountAmount);
+		commerceOrder.setShippingDiscountAmount(shippingDiscountAmount);
+
+		commerceOrderPersistence.update(commerceOrder);
+
+		// Recalculate price
+
+		commerceOrder = commerceOrderLocalService.recalculatePrice(
+			commerceOrderId, commerceContext);
+
+		return commerceOrder;
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceOrder updateInfo(
