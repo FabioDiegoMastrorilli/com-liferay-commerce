@@ -626,6 +626,25 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 	}
 
 	@Override
+	public CommerceOrder updateDiscountAmounts(
+			long commerceOrderId, BigDecimal subtotalDiscountAmount,
+			BigDecimal totalDiscountAmount, BigDecimal shippingDiscountAmount,
+			CommerceContext commerceContext)
+		throws PortalException {
+
+		_commerceOrderModelResourcePermission.check(
+			getPermissionChecker(), commerceOrderId, ActionKeys.UPDATE);
+
+		PortalPermissionUtil.check(
+			getPermissionChecker(),
+			CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
+
+		return commerceOrderLocalService.updateDiscountAmounts(
+			commerceOrderId, subtotalDiscountAmount, totalDiscountAmount,
+			shippingDiscountAmount, commerceContext);
+	}
+
+	@Override
 	public CommerceOrder updateInfo(
 			long commerceOrderId, String printedNote,
 			int requestedDeliveryDateMonth, int requestedDeliveryDateDay,
