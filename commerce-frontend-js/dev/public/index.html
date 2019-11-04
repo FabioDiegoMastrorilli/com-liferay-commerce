@@ -24,6 +24,12 @@
 <body>
 	<div id="example-root-id" class="bg-checkered"></div>
 
+	<script>
+		if (window.parent !== window) {
+			window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+		}
+	</script>
+
 	<script src="/example.js"></script>
 </body>
 </html>

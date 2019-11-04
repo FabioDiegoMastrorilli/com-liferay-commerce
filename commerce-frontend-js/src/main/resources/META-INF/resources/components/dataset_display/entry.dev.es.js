@@ -533,8 +533,8 @@ launcher('dataset-display', 'dataset-display', {
 	},
 	selectable: true,
 	showPagination: true,
-	sidePanelId: 'sidePanelTestId',
 	spritemap: './assets/icons.svg',
 	tableTitle: 'Orders',
-	totalItems: 4
+	totalItems: 4,
+	triggers: ['sidePanelTestId'],
 });

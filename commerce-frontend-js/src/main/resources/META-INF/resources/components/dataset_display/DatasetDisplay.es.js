@@ -1,12 +1,13 @@
 import {ClayIconSpriteContext} from '@clayui/icon';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 
 import DatasetDisplayContext from './DatasetDisplayContext.es';
 import ManagementBar from './management_bar/index.es';
 import Pagination from './pagination/index.es';
 import Table from './table/Table.es';
+import { UPDATE_FROM_COMPONENT } from '../../utilities/eventsDefinitions.es'
 
 // function getApiEndpoint(dataSetAPI, pageSize, currentPage = 1, filters = []) {
 // 	const formattedFilters = Object.keys(filters)
@@ -27,7 +28,7 @@ function DatasetDisplay(props) {
 
 	const formRef = useRef(null);
 
-	const selectItems = (checked, val = null) => {
+	function selectItems(checked, val = null) {
 		if (!val) {
 			if (checked) {
 				setselectedItemsId(props.items.map(el => el.id));
@@ -43,9 +44,25 @@ function DatasetDisplay(props) {
 		}
 	};
 
-	function loadData() {
+	const loadData = useCallback(() => {
+		// eslint-disable-next-line no-console
+		console.log('load data');
 		return;
-	}
+	}, [])
+
+	const handleUpdateFromOutside = useCallback((e) => {
+		if(props.triggers.includes(e.id)) {
+			loadData()
+		}
+	}, [props.triggers, loadData])
+
+	useEffect(() => {
+		Liferay.on(UPDATE_FROM_COMPONENT, handleUpdateFromOutside)
+
+		return () => {
+			Liferay.detach(UPDATE_FROM_COMPONENT, handleUpdateFromOutside)
+		}
+	}, [handleUpdateFromOutside])
 
 	const managementBar = (
 		<ManagementBar
@@ -141,13 +158,15 @@ DatasetDisplay.propTypes = {
 	tableTitle: PropTypes.string,
 	tableWrapperCssClasses: PropTypes.string,
 	totalItems: PropTypes.number,
+	triggers: PropTypes.arrayOf(PropTypes.string),
 	wrapTableIntoCard: PropTypes.bool,
 	wrapperCssClasses: PropTypes.string
 };
 
 DatasetDisplay.defaultProps = {
 	currentPage: 1,
-	showPagination: true
+	showPagination: true,
+	triggers: []
 };
 
 export default DatasetDisplay;
