@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem" %><%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -20,14 +20,138 @@
 CommerceOrderContentDisplayContext commerceOrderContentDisplayContext = (CommerceOrderContentDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrder();
-%>
 
-<div class="b2b-portlet-content-header">
-	<div class="autofit-float autofit-row header-title-bar">
-		<div class="autofit-col autofit-col-expand">
-			<liferay-ui:message arguments="<%= commerceOrderContentDisplayContext.getCommerceOrderNotesCount(commerceOrder) %>" key="x-comments" />
+	List<DropdownItem> dropdownItems = new ArrayList<>();
+	DropdownItem dropdownItem_1 = new DropdownItem();
+	dropdownItem_1.setIcon("edit");
+	dropdownItem_1.setHref("#");
+	dropdownItem_1.setLabel("edit");
+	DropdownItem dropdownItem_2 = new DropdownItem();
+	dropdownItem_2.setIcon("delete");
+	dropdownItem_2.setHref("#");
+	dropdownItem_2.setLabel("delete");
+
+	dropdownItems.add(dropdownItem_1);
+	dropdownItems.add(dropdownItem_2);
+
+%>
+<h2 class="iframe-title pl-3 pr-5 py-2 border-bottom">
+    <liferay-ui:message arguments="<%= commerceOrderContentDisplayContext.getCommerceOrderNotesCount(commerceOrder) %>" key="x-comments" />
+</h2>
+
+<div class="container mt-4">
+	<div class="order-comment mb-5">
+		<div class="row">
+			<div class="col">
+				<span class="sticker sticker-lg sticker-user-icon">
+					<span class="sticker-overlay">
+						<img
+								alt="thumbnail"
+								class="sticker-img"
+								src="https://via.placeholder.com/40"
+						/>
+					</span>
+				</span>
+				<clay:link href="#" label="Ryan Connoly" title="Ryan Connoly" />
+			</div>
+			<div class="col align-items-center col-auto d-flex">
+				<span class="text-muted">2 days ago</span>
+			</div>
+			<div class="col-auto">
+				<clay:dropdown-menu
+					triggerCssClasses="btn-monospaced"
+					buttonType="button"
+					dropdownItems="<%= dropdownItems %>"
+					icon="ellipsis-v"
+				/>
+			</div>
+		</div>
+		<div class="mt-2">
+			Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 		</div>
 	</div>
+
+	<div class="order-comment mb-5">
+		<div class="row">
+			<div class="col">
+				<span class="sticker sticker-lg sticker-user-icon">
+					<span class="sticker-overlay">
+						<img
+								alt="thumbnail"
+								class="sticker-img"
+								src="https://via.placeholder.com/40"
+						/>
+					</span>
+				</span>
+				<clay:link href="#" label="Andrea Censi" title="Andrea Censi" />
+			</div>
+			<div class="col align-items-center col-auto d-flex">
+				<span class="text-muted">1 day ago</span>
+			</div>
+			<div class="col-auto">
+				<clay:dropdown-menu
+						triggerCssClasses="btn-monospaced"
+						buttonType="button"
+						dropdownItems="<%= dropdownItems %>"
+						icon="ellipsis-v"
+				/>
+			</div>
+		</div>
+		<div class="mt-2">
+			Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+		</div>
+	</div>
+
+	<div class="order-comment mb-5">
+		<div class="row">
+			<div class="col">
+				<span class="sticker sticker-lg sticker-user-icon">
+					<span class="sticker-overlay">
+						<img
+								alt="thumbnail"
+								class="sticker-img"
+								src="https://via.placeholder.com/40"
+						/>
+					</span>
+				</span>
+				<clay:link href="#" label="Ryan Connoly" title="Ryan Connoly" />
+			</div>
+			<div class="col align-items-center col-auto d-flex">
+				<span class="text-muted">5 hours ago</span>
+			</div>
+			<div class="col-auto">
+				<clay:dropdown-menu
+						triggerCssClasses="btn-monospaced"
+						buttonType="button"
+						dropdownItems="<%= dropdownItems %>"
+						icon="ellipsis-v"
+				/>
+			</div>
+		</div>
+		<div class="mt-2">
+			Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.
+		</div>
+	</div>
+</div>
+
+<div class="bottom-fixed-input">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-item input-group-prepend">
+                <input
+                    aria-label="Leave a comment..."
+                    class="form-control"
+                    placeholder="Leave a comment..."
+                    type="text"
+                />
+            </div>
+            <span
+                class="input-group-append input-group-item input-group-item-shrink"
+            >
+			<button class="btn btn-secondary" type="button">Submit</button>
+		</span>
+        </div>
+    </div>
 </div>
 
 <div class="taglib-discussion">

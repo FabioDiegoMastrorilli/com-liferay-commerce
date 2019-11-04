@@ -84,25 +84,23 @@ CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 				</div>
 			</div>
 
-			<div class="collapse d-lg-flex" id="navbarNavAltMarkup">
-				<div class="align-self-center row">
-					<c:if test="<%= commerceOrder.isOpen() %>">
-						<div class="col-12 col-lg-auto header-assigner mt-3 mt-lg-0">
-							<c:if test="<%= true %>">
-								<div id="assigner-root"></div>
 
-								<aui:script require="commerce-frontend-js/components/assigner/entry.es as assigner">
-									assigner.default(
-										"assigner",
-										"assigner-root",
-										{
-											spritemap: '<%= themeDisplay.getPathThemeImages() + "/lexicon/icons.svg" %>'
-										}
-									);
-								</aui:script>
-							</c:if>
-						</div>
-					</c:if>
+			<div id="navbarNavAltMarkup" class="collapse d-lg-flex">
+				<div class="row align-self-center">
+					<div class="header-assigner col-12 mt-3 mt-lg-0 col-lg-auto">
+						<c:if test="<%= true %>">
+							<div id="assigner-root"></div>
+							<aui:script require="commerce-frontend-js/components/assigner/entry.es as assigner">
+								assigner.default(
+									"assigner",
+									"assigner-root",
+									{
+										spritemap: "<%= "/o/admin-theme/images/lexicon/icons.svg" %>"
+									}
+								);
+							</aui:script>
+						</c:if>
+					</div>
 
 					<div class="col-12 col-lg-auto header-actions is-visible mt-3 mt-lg-0" id="<portlet:namespace />orderTransition">
 

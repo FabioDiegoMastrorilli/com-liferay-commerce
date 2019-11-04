@@ -329,6 +329,41 @@ List<CommerceOrderValidatorResult> commerceOrderValidatorResults = new ArrayList
 	</div>
 </div>
 
+<div id="order-details-side-panel"></div>
+
+<liferay-portlet:renderURL var="viewOrderNotesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+	<portlet:param name="mvcRenderCommandName" value="viewCommerceOrderNotes" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+</liferay-portlet:renderURL>
+
+<portlet:actionURL name="editCommerceOrder" var="editCommerceOrderURL" />
+
+<aui:script require="commerce-frontend-js/components/side_panel/entry.es as sidePanel">
+	sidePanel.default(
+		"orderDetailsSidePanel",
+		"order-details-side-panel",
+		{
+			id: 'sidePanelTestId',
+			size: 'xs',
+			spritemap: '/o/admin-theme/images/lexicon/icons.svg',
+			topAnchor: document.querySelector('.commerce-topbar'),
+			items: [
+				{
+					slug: 'comments',
+					href: '<%= viewOrderNotesURL %>',
+					icon: 'comments'
+				},
+				{
+					slug: 'edit',
+					href: '<%= editCommerceOrderURL %>',
+					icon: 'pencil'
+				}
+			]
+		}
+	);
+</aui:script>
+
+
 <%@ include file="/pending_orders/transition.jspf" %>
 
 <aui:script use="aui-base">

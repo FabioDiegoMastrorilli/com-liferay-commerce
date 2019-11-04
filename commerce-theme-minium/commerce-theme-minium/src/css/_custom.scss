@@ -5,12 +5,15 @@
 /* ---------- endinject ---------- */
 
 html {
-	background-color: $color-bg-alt;
 	height: 100%;
 
 	.dropdown-menu {
 		z-index: 2000;
 	}
+}
+
+html, body {
+	background-color: $color-bg-alt;
 }
 
 #minium {
@@ -104,6 +107,18 @@ html {
 	}
 
 	.form-group-inline {
+		margin-bottom: 0;
+	}
+}
+
+.bottom-fixed-input {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+	padding: 12px;
+	border-top: 1px solid $color-fg-alt;
+	.form-group {
 		margin-bottom: 0;
 	}
 }

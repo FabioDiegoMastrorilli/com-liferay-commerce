@@ -113,7 +113,10 @@
   }
 
   &.btn-monospaced {
-    border-radius: 50%;
+    border-radius: 8px;
+    padding: 0;
+    line-height: 1;
+    font-size: 14px;
   }
 
   &.btn-sm {
