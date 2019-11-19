@@ -117,8 +117,13 @@ html, body {
     right: 0;
     bottom: 0;
 	padding: 12px;
-	border-top: 1px solid $color-fg-alt;
+	border-top: 1px solid $color-border;
+
 	.form-group {
 		margin-bottom: 0;
+	}
+
+	input {
+		border: none;
 	}
 }

@@ -343,10 +343,8 @@ List<CommerceOrderValidatorResult> commerceOrderValidatorResults = new ArrayList
 		"orderDetailsSidePanel",
 		"order-details-side-panel",
 		{
+		    container: '#main-content',
 			id: 'sidePanelTestId',
-			size: 'xs',
-			spritemap: '/o/admin-theme/images/lexicon/icons.svg',
-			topAnchor: document.querySelector('.commerce-topbar'),
 			items: [
 				{
 					slug: 'comments',
@@ -358,11 +356,13 @@ List<CommerceOrderValidatorResult> commerceOrderValidatorResults = new ArrayList
 					href: '<%= editCommerceOrderURL %>',
 					icon: 'pencil'
 				}
-			]
+			],
+			size: 'sm',
+			spritemap: '/o/admin-theme/images/lexicon/icons.svg',
+			topAnchor: '.commerce-topbar',
 		}
 	);
 </aui:script>
-
 
 <%@ include file="/pending_orders/transition.jspf" %>
 

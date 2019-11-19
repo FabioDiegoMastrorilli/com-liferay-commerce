@@ -53,7 +53,9 @@ if (!window.Liferay) {
 		fire: (name, payload) => {
 			var e = document.createEvent( 'CustomEvent' );
 			e.initCustomEvent(name);
-			Object.keys(payload).forEach(key => { e[key] = payload[key] })
+			if(payload) {
+				Object.keys(payload).forEach(key => { e[key] = payload[key] })
+			}
 			window.dispatchEvent(e);
 		},
 		on: (name, fn) => {

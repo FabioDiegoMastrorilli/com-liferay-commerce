@@ -174,11 +174,11 @@ public class ModalTag extends IncludeTag {
 		}
 
 		request.setAttribute(
-			"liferay-commerce:modal:cancelLabel", _cancelLabel);
+				"liferay-commerce:modal:cancelLabel", _cancelLabel);
 		request.setAttribute(
-			"liferay-commerce:modal:closeOnSubmit", _closeOnSubmit);
+				"liferay-commerce:modal:closeOnSubmit", _closeOnSubmit);
 		request.setAttribute(
-			"liferay-commerce:modal:deleteLabel", _deleteLabel);
+				"liferay-commerce:modal:deleteLabel", _deleteLabel);
 		request.setAttribute("liferay-commerce:modal:id", _id);
 		request.setAttribute("liferay-commerce:modal:showCancel", _showCancel);
 		request.setAttribute("liferay-commerce:modal:showDelete", _showDelete);
@@ -186,10 +186,10 @@ public class ModalTag extends IncludeTag {
 		request.setAttribute("liferay-commerce:modal:size", _size);
 		request.setAttribute("liferay-commerce:modal:spritemap", _spritemap);
 		request.setAttribute(
-			"liferay-commerce:modal:submitAvailableAtLoading",
-			_submitAvailableAtLoading);
+				"liferay-commerce:modal:submitAvailableAtLoading",
+				_submitAvailableAtLoading);
 		request.setAttribute(
-			"liferay-commerce:modal:submitLabel", _submitLabel);
+				"liferay-commerce:modal:submitLabel", _submitLabel);
 		request.setAttribute("liferay-commerce:modal:title", _title);
 		request.setAttribute("liferay-commerce:modal:url", _url);
 	}

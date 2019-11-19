@@ -52,7 +52,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 						/>
 					</span>
 				</span>
-				<clay:link href="#" label="Ryan Connoly" title="Ryan Connoly" />
+				<clay:link elementClasses="ml-2" href="#" label="Ryan Connoly" title="Ryan Connoly" />
 			</div>
 			<div class="col align-items-center col-auto d-flex">
 				<span class="text-muted">2 days ago</span>
@@ -83,7 +83,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 						/>
 					</span>
 				</span>
-				<clay:link href="#" label="Andrea Censi" title="Andrea Censi" />
+				<clay:link elementClasses="ml-2" href="#" label="Andrea Censi" title="Andrea Censi" />
 			</div>
 			<div class="col align-items-center col-auto d-flex">
 				<span class="text-muted">1 day ago</span>
@@ -114,7 +114,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 						/>
 					</span>
 				</span>
-				<clay:link href="#" label="Ryan Connoly" title="Ryan Connoly" />
+				<clay:link elementClasses="ml-2" href="#" label="Ryan Connoly" title="Ryan Connoly" />
 			</div>
 			<div class="col align-items-center col-auto d-flex">
 				<span class="text-muted">5 hours ago</span>

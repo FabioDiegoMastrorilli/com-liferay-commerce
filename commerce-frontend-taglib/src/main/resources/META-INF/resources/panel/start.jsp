@@ -30,17 +30,13 @@
 				<aui:script require="commerce-frontend-js/utilities/eventsDefinitions.es as eventsDefinitions">
 					const link = document.getElementById('<%= linkId %>');
 
-					if(link) {
-						link.addEventListener('click', function(e) {
-							e.preventDefault();
-							Liferay.fire(
-								eventsDefinitions.OPEN,
-								{
-									id: "<%= actionTargetId %>"
-								}
-							)
-						})
-					}
+					Liferay.fire('openSidePanel', {
+						id: 'id',
+						options: {
+							slug: 'edit',
+							url: 'http//',
+						}
+					})
 				</aui:script>
 			</c:if>
 

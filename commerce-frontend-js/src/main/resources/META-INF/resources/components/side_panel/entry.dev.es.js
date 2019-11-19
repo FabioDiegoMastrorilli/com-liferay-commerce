@@ -3,6 +3,7 @@ import launcher from './entry.es';
 import '../../styles/main.scss';
 
 window.SidePanel = launcher('sidePanel', 'side-panel', {
+	container: document.querySelector('.smart-table-wrapper'),
 	id: 'sidePanelTestId',
 	items: [
 		{

@@ -38,6 +38,9 @@ export default class SidePanel extends React.Component {
 			window.addEventListener('resize', this.debouncedUpdateTop);
 			this.updateTop();
 		}
+		if(this.props.container) {
+			this.props.container.classList.add('with-side-panel')
+		}
 		if (Liferay) {
 			Liferay.on(OPEN_SIDE_PANEL, this.handlePanelOpenEvent);
 		}
@@ -56,6 +59,8 @@ export default class SidePanel extends React.Component {
 			});
 		}
 	}
+
+
 
 	componentWillUnmount() {
 		if (this.props.topAnchor) {
