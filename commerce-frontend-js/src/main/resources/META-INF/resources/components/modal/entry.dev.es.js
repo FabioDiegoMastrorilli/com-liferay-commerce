@@ -1,10 +1,11 @@
 import React from 'react';
 
 import {launcher} from '../../utilities/index.es';
+import {OPEN_MODAL} from '../../utilities/eventsDefinitions.es';
 import modalLauncher from './entry.es';
-import { OPEN } from '../../utilities/eventsDefinitions.es';
 
-import '../../styles/main.scss'
+import './_modal.scss';
+import '../../styles/main.scss';
 
 const props = {
 	actions: [
@@ -13,7 +14,7 @@ const props = {
 		}
 	],
 	closeOnSubmit: true,
-	id: 'test-modal',
+	id: 'test-modal-id',
 	showCancel: true,
 	size: 'full-screen',
 	spritemap: './assets/icons.svg',
@@ -22,18 +23,17 @@ const props = {
 	url: 'http://localhost:9000/modal-content.html'
 };
 
-modalLauncher('modal', 'modal-root-id', props);
+modalLauncher('modal', 'modal-root', props);
 
 launcher(
 	() => (
 		<button
 			className="btn btn-primary"
-			onClick={() => Liferay.fire(OPEN, {id: "test-modal"})}
+			onClick={() => Liferay.fire(OPEN_MODAL, {id: 'test-modal-id'})}
 		>
 			Open modal
 		</button>
 	),
-	'modal-trigger-root-id',
-	'modal-trigger-root-id',
-	props
+	'modal-trigger-root',
+	'modal-trigger-root'
 );
