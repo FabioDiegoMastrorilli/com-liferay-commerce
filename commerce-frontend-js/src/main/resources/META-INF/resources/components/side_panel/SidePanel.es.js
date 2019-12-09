@@ -27,7 +27,7 @@ export default class SidePanel extends React.Component {
 	}
 
 	componentDidMount() {
-		if (this.props.topAnchor) {
+		if (this.props.topAnchorSelector) {
 			window.addEventListener('resize', this.debouncedUpdateTop);
 			this.updateTop();
 		}
@@ -51,7 +51,7 @@ export default class SidePanel extends React.Component {
 	}
 
 	componentWillUnmount() {
-		if (this.props.topAnchor) {
+		if (this.props.topAnchorSelector) {
 			window.removeEventListener('resize', this.debouncedUpdateTop);
 		}
 		if (Liferay) {
@@ -60,7 +60,17 @@ export default class SidePanel extends React.Component {
 	}
 
 	updateTop() {
-		const {height, top} = this.props.topAnchor.getBoundingClientRect();
+		if(!this.props.topAnchorSelector){
+			return;
+		}
+
+		const topAnchor = document.querySelector(this.props.topAnchorSelector);
+
+		if(!topAnchor) {
+			return;
+		}
+
+		const {height, top} = this.props.topAnchorSelector.getBoundingClientRect();
 
 		this.setState({
 			topDistance: top + height + 'px'

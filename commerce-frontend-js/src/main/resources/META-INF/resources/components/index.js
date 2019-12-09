@@ -4,7 +4,7 @@ module.exports = [
     entry_dev: "entry.dev.es.js",
     folder: "dataset_display",
     name: "Dataset display",
-    page: "dataset_display.html"
+    page: "dataset-display.html"
   },
   {
     entry: "entry.es.js",
@@ -25,6 +25,13 @@ module.exports = [
     folder: "gallery",
     name: "Gallery",
     page: "gallery.html"
+  },
+  {
+    entry: "entry.es.js",
+    entry_dev: "entry.dev.es.js",
+    folder: "modal",
+    name: "Modal",
+    page: "modal.html"
   },
   {
     entry: "entry.es.js",
