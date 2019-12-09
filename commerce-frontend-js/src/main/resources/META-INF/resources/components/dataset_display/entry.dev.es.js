@@ -1,12 +1,21 @@
 import launcher from './entry.es';
 
 import '../../styles/main.scss';
+import { OPEN_SIDE_PANEL } from '../../utilities/eventsDefinitions.es';
 
 launcher('dataset-display', 'dataset-display-root-id', {
 	apiUrl: '/o/headless-commerce-admin-order/v1.0/orders/37174/orderItems',
 	bulkActions: [
 		{
-			action: '/edit',
+			action: (ids) => {
+				Liferay.fire(OPEN_SIDE_PANEL, {
+					id: 'sidePanelTestId',
+					options: {
+						slug: 'edit',
+						url: `/edit-content?ids=${ids.join(',')}`,
+					}
+				})
+			},
 			icon: 'plus',
 			label: 'Add'
 		},
@@ -153,6 +162,10 @@ launcher('dataset-display', 'dataset-display-root-id', {
 			sku: {
 				label: 'MIN38794',
 				url: '/sidepanel-1.html'
+			},
+			comments: {
+				quantity: "This is a test! I don't like this number btw",
+				name: "Square pls"
 			},
 			skuExternalReferenceCode: 'min38794',
 			skuId: 36456,
